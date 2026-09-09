@@ -1284,23 +1284,7 @@
     </button>
   </div>
 
-  <button class="choose-btn" id="chooseBtn" onclick="openConfirm()" disabled>CHOOSE THIS COW</button>
-</div>
-
-
-<!-- ===================================================
-     CONFIRM MODAL (PERMANENT STARTER)
-     =================================================== -->
-<div class="confirm-overlay" id="confirmOverlay">
-  <div class="modal-box">
-    <p class="modal-title">ARE YOU SURE?</p>
-    <p class="modal-cow" id="modalCowName">THE FIRE COW</p>
-    <p class="modal-body">YOUR STARTER IS PERMANENT FOR THIS SESSION.<br>YOU CANNOT UNDO THIS CHOICE.</p>
-    <div class="modal-actions">
-      <button class="modal-cancel" onclick="closeConfirm()">CANCEL</button>
-      <button class="modal-confirm" onclick="confirmCow()">YES, THIS IS MY COW</button>
-    </div>
-  </div>
+  <button class="choose-btn" id="chooseBtn" onclick="confirmCow()" disabled>CHOOSE THIS COW</button>
 </div>
 
 
@@ -1695,19 +1679,8 @@
     document.getElementById('chooseBtn').disabled = false;
   }
 
-  function openConfirm() {
-    if (!selectedCow) return;
-    const cow = COW_TYPES.find(c => c.id === selectedCow);
-    document.getElementById('modalCowName').textContent = 'THE ' + cow.label + ' TYPE COW';
-    document.getElementById('confirmOverlay').classList.add('show');
-  }
-
-  function closeConfirm() {
-    document.getElementById('confirmOverlay').classList.remove('show');
-  }
-
   function confirmCow() {
-    closeConfirm();
+    if (!selectedCow) return;
     const cow = COW_TYPES.find(c => c.id === selectedCow);
     gameState.starterType = cow.id;
     gameState.starterAccent = cow.accent;
