@@ -1041,29 +1041,40 @@
     <div style="width:60px"></div>
   </div>
 
-  <div class="section-badge">STEP 1 OF 4</div>
-  <div class="section-heading">EVERY ADVENTURE BEGINS WITH A NAME.</div>
+  <div class="section-badge">STEP 1 OF 2</div>
+  <div class="section-heading">CREATE YOUR PLAYER PROFILE.</div>
 
   <div class="dialogue-box" style="margin-bottom:16px;">
-    <p class="dialogue-text"><span class="teal">WHAT IS YOUR NAME?</span></p>
+    <p class="dialogue-text">BEFORE YOUR JOURNEY BEGINS,<br><span class="teal">TELL US ABOUT YOUR PLAYER.</span></p>
   </div>
   <svg class="narrator-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
 
   <div class="field-group">
     <label class="field-label" for="playerName">YOUR NAME</label>
-    <input class="field-input" type="text" id="playerName" placeholder="e.g. Mia" maxlength="20" autocomplete="off">
+    <input class="field-input" type="text" id="playerName" placeholder="e.g. Joey" maxlength="20" autocomplete="name">
+    <p class="error-msg" id="nameError">PLEASE ENTER YOUR NAME.</p>
   </div>
 
-  <p class="error-msg" id="nameError">PLEASE ENTER YOUR NAME TO CONTINUE!</p>
+  <div class="field-group">
+    <label class="field-label" for="playerAge">YOUR AGE</label>
+    <input class="field-input" type="number" id="playerAge" placeholder="e.g. 39" min="1" max="99" inputmode="numeric" autocomplete="off">
+    <p class="error-msg" id="ageError">PLEASE ENTER A VALID AGE.</p>
+  </div>
 
-  <button class="primary-btn" onclick="submitName()">CONTINUE</button>
+  <div class="field-group">
+    <label class="field-label" for="playerCity">WHERE ARE YOU FROM?</label>
+    <input class="field-input" type="text" id="playerCity" placeholder="e.g. Portsmouth" maxlength="30" autocomplete="address-level2">
+    <p class="error-msg" id="cityError">PLEASE ENTER YOUR CITY OR TOWN.</p>
+  </div>
+
+  <button class="primary-btn" onclick="submitProfile()">CREATE PLAYER</button>
 </div>
 
 
 <!-- ===================================================
-     PAGE 3: PLAYER AGE
+     PAGE 5: PHOTO UPLOAD
      =================================================== -->
-<div id="page-3" class="game-page">
+<div id="page-5" class="game-page">
   <div class="page-header">
     <button class="back-btn" onclick="goToPage('page-2')">BACK</button>
     <div class="mini-logo">
@@ -1073,75 +1084,11 @@
     <div style="width:60px"></div>
   </div>
 
-  <div class="section-badge">STEP 2 OF 4</div>
-  <div class="section-heading" id="ageHeading">YOUR NEXT ANSWER SHAPES YOUR JOURNEY.</div>
+  <div class="section-badge">STEP 2 OF 2</div>
+  <div class="section-heading">EVERY FINAL BOSS NEEDS A FACE.</div>
 
   <div class="dialogue-box" style="margin-bottom:16px;">
-    <p class="dialogue-text" id="ageDialogue"><span class="teal">NICE TO MEET YOU!</span><br>HOW OLD ARE YOU?</p>
-  </div>
-  <svg class="narrator-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
-
-  <div class="field-group">
-    <label class="field-label" for="playerAge">YOUR AGE</label>
-    <input class="field-input" type="number" id="playerAge" placeholder="e.g. 21" min="1" max="99" autocomplete="off">
-  </div>
-
-  <p class="error-msg" id="ageError">PLEASE ENTER A VALID AGE!</p>
-
-  <button class="primary-btn" onclick="submitAge()">CONTINUE</button>
-</div>
-
-
-<!-- ===================================================
-     PAGE 4: PLAYER CITY
-     =================================================== -->
-<div id="page-4" class="game-page">
-  <div class="page-header">
-    <button class="back-btn" onclick="goToPage('page-3')">BACK</button>
-    <div class="mini-logo">
-      <div class="mini-moo-box"><span>MOO</span></div>
-      <span class="mini-mentum">mentum</span>
-    </div>
-    <div style="width:60px"></div>
-  </div>
-
-  <div class="section-badge">STEP 3 OF 4</div>
-  <div class="section-heading">YOUR HOME BASE AWAITS.</div>
-
-  <div class="dialogue-box" style="margin-bottom:16px;">
-    <p class="dialogue-text">EVERY TRAINER HAS A HOME TOWN.<br><span class="teal">WHERE DO YOU CALL HOME?</span></p>
-  </div>
-  <svg class="narrator-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
-
-  <div class="field-group">
-    <label class="field-label" for="playerCity">YOUR CITY OR TOWN</label>
-    <input class="field-input" type="text" id="playerCity" placeholder="e.g. Portsmouth" maxlength="30" autocomplete="off">
-  </div>
-
-  <p class="error-msg" id="cityError">PLEASE ENTER YOUR CITY TO CONTINUE!</p>
-
-  <button class="primary-btn" onclick="submitCity()">CONTINUE</button>
-</div>
-
-
-<!-- ===================================================
-     PAGE 5: PHOTO UPLOAD
-     =================================================== -->
-<div id="page-5" class="game-page">
-  <div class="page-header">
-    <button class="back-btn" onclick="goToPage('page-4')">BACK</button>
-    <div class="mini-logo">
-      <div class="mini-moo-box"><span>MOO</span></div>
-      <span class="mini-mentum">mentum</span>
-    </div>
-    <div style="width:60px"></div>
-  </div>
-
-  <div class="section-badge">STEP 4 OF 4</div>
-  <div class="section-heading">YOUR TRAINER PROFILE.</div>
-
-  <div class="dialogue-box" style="margin-bottom:16px;">
-    <p class="dialogue-text">ALL GREAT TRAINERS HAVE A FACE.<br><span class="teal">UPLOAD A PHOTO OF YOU.</span></p>
+    <p class="dialogue-text">YOUR FINAL CHALLENGE WILL BE PERSONAL.<br><span class="teal">UPLOAD A PHOTO OF YOU.</span></p>
   </div>
   <svg class="narrator-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
 
@@ -1280,7 +1227,7 @@
   <svg class="narrator-cow question-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
 
   <div class="rating-row" id="ratingRow"></div>
-  <p class="rating-note" id="ratingHint">1 = NOT ME YET · 10 = ABSOLUTELY ME</p>
+  <p class="rating-note" id="ratingHint">1 = STRONGLY DISAGREE · 10 = STRONGLY AGREE</p>
 
   <p class="error-msg" id="quizError">PICK A RATING BEFORE CONTINUING!</p>
 
@@ -1574,41 +1521,20 @@
   }
 
   // ============ STEP HANDLERS ============
-  function submitName() {
-    const val = document.getElementById('playerName').value.trim();
-    if (!val) {
-      document.getElementById('nameError').style.display = 'block';
-      return;
-    }
-    document.getElementById('nameError').style.display = 'none';
-    gameState.playerName = val;
+  function submitProfile() {
+    const name = document.getElementById('playerName').value.trim();
+    const age = parseInt(document.getElementById('playerAge').value, 10);
+    const city = document.getElementById('playerCity').value.trim();
 
-    // Personalise next page
-    document.getElementById('ageHeading').innerHTML = 'YOUR NEXT ANSWER SHAPES YOUR JOURNEY.';
-    document.getElementById('ageDialogue').innerHTML = '<span class="teal">NICE TO MEET YOU ' + val.toUpperCase() + '!</span><br>HOW OLD ARE YOU?';
+    document.getElementById('nameError').style.display = name ? 'none' : 'block';
+    document.getElementById('ageError').style.display = age >= 1 && age <= 99 ? 'none' : 'block';
+    document.getElementById('cityError').style.display = city ? 'none' : 'block';
 
-    goToPage('page-3');
-  }
+    if (!name || !age || age < 1 || age > 99 || !city) return;
 
-  function submitAge() {
-    const val = parseInt(document.getElementById('playerAge').value);
-    if (!val || val < 1 || val > 99) {
-      document.getElementById('ageError').style.display = 'block';
-      return;
-    }
-    document.getElementById('ageError').style.display = 'none';
-    gameState.playerAge = val;
-    goToPage('page-4');
-  }
-
-  function submitCity() {
-    const val = document.getElementById('playerCity').value.trim();
-    if (!val) {
-      document.getElementById('cityError').style.display = 'block';
-      return;
-    }
-    document.getElementById('cityError').style.display = 'none';
-    gameState.playerCity = val;
+    gameState.playerName = name;
+    gameState.playerAge = age;
+    gameState.playerCity = city;
     goToPage('page-5');
   }
 
@@ -1643,32 +1569,32 @@
 
   // ============ RESILIENCE QUESTIONNAIRE ============
   const QUESTIONS = [
-    { key: 'courage',        name: 'COURAGE',        text: 'WHEN THINGS GET HARD,<br>DO YOU GET BUSY OR<br><span class="teal">GET DISCOURAGED?</span><br><br>BE HONEST. YOUR STARTER<br>WILL KNOW ANYWAY.' },
-    { key: 'calm',           name: 'CALM',           text: 'CAN YOU STEADY YOURSELF<br>WHEN YOUR THOUGHTS<br>START <span class="teal">SPINNING?</span><br><br>NO JUDGEMENT HERE.<br>WE ALL SPIN SOMETIMES.' },
-    { key: 'energy',         name: 'ENERGY',         text: 'DO YOU BRING REAL<br>ENERGY TO THE THINGS<br>THAT <span class="teal">MATTER?</span><br><br>BE REALISTIC.<br>SOFA DAYS COUNT TOO.' },
-    { key: 'selfAwareness',  name: 'SELF-AWARENESS', text: 'DO YOU KNOW WHAT<br>PULLS YOUR STRINGS,<br>AND <span class="teal">HOW TO CUT THEM?</span><br><br>THIS ONE\'S THE SECRET<br>WEAPON.' },
-    { key: 'adaptability',   name: 'ADAPTABILITY',   text: 'WHEN THE PLAN FALLS<br>APART, DO YOU FIND<br>A <span class="teal">NEW ROUTE?</span><br><br>DETOURS ARE PART<br>OF THE ADVENTURE.' },
-    { key: 'confidence',     name: 'CONFIDENCE',     text: 'DO YOU BACK YOURSELF<br>WHEN THE ROOM GETS<br><span class="teal">HEAVY?</span><br><br>EVEN A LITTLE BIT<br>COUNTS.' },
-    { key: 'focus',          name: 'FOCUS',          text: 'CAN YOU TUNE OUT<br>DISTRACTION AND STAY<br>ON THE <span class="teal">TASK?</span><br><br>PHONES DON\'T COUNT.<br>WE ALL LOSE THAT FIGHT.' },
-    { key: 'recovery',       name: 'RECOVERY',       text: 'AFTER A KNOCK,<br>DO YOU PICK YOURSELF<br>BACK <span class="teal">UP?</span><br><br>THE BOUNCE IS THE<br>WHOLE GAME.' },
-    { key: 'persistence',    name: 'PERSISTENCE',    text: 'WHEN PROGRESS FEELS<br>SLOW, HOW WELL DO YOU<br><span class="teal">KEEP GOING?</span><br><br>SMALL STEPS STILL<br>MOVE YOU FORWARD.' },
-    { key: 'emotionalBalance', name: 'EMOTIONAL BALANCE', text: 'CAN YOU NOTICE A<br>DIFFICULT FEELING AND<br><span class="teal">STILL MOVE FORWARD?</span><br><br>FEEL IT. NAME IT.<br>CHOOSE WHAT COMES NEXT.' }
-  ];
+    { key: 'emotionalAwareness', name: 'EMOTIONAL AWARENESS', text: 'I AM AWARE OF THE EMOTIONS<br><span class="teal">I FEEL AS THEY ARISE.</span>' },
+    { key: 'purpose', name: 'PURPOSE', text: 'I HAVE A CLEAR SENSE OF WHAT<br>MATTERS TO ME AND WHAT<br><span class="teal">I AM WORKING TOWARDS.</span>' },
+    { key: 'cognitiveAgility', name: 'COGNITIVE AGILITY', text: 'I CAN ADJUST MY THINKING WHEN<br>CIRCUMSTANCES OR NEW INFORMATION<br><span class="teal">REQUIRE IT.</span>' },
+    { key: 'creativity', name: 'CREATIVITY', text: 'I CAN GENERATE NEW IDEAS<br>AND FIND DIFFERENT WAYS<br><span class="teal">TO SOLVE PROBLEMS.</span>' },
+    { key: 'sleep', name: 'SLEEP', text: 'I CONSISTENTLY GET ENOUGH<br>GOOD-QUALITY SLEEP TO<br><span class="teal">FUNCTION AT MY BEST.</span>' },
+    { key: 'nutrition', name: 'NUTRITION', text: 'I REGULARLY FUEL MY BODY<br>IN A WAY THAT SUPPORTS MY<br><span class="teal">MENTAL AND PHYSICAL PERFORMANCE.</span>' },
+    { key: 'movement', name: 'MOVEMENT', text: 'I REGULARLY MOVE MY BODY<br>ENOUGH TO SUPPORT MY MENTAL<br><span class="teal">AND PHYSICAL WELLBEING.</span>' },
+    { key: 'stressManagement', name: 'STRESS MANAGEMENT', text: 'I CAN MANAGE PRESSURE<br>WITHOUT ALLOWING IT TO<br><span class="teal">OVERWHELM ME.</span>' },
+    { key: 'connection', name: 'CONNECTION', text: 'I MAINTAIN MEANINGFUL RELATIONSHIPS<br>AND FEEL CONNECTED<br><span class="teal">TO OTHER PEOPLE.</span>' },
+    { key: 'courage', name: 'COURAGE', text: 'I TAKE ACTION WHEN SOMETHING<br>IMPORTANT FEELS DIFFICULT,<br><span class="teal">FRIGHTENING OR UNCERTAIN.</span>' }
+  ]
 
   const COW_TYPES = [
-    { id: 'fire',     label: 'FIRE',     accent: '#e2592f', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/505abdd9e9ba4b5f82fd5b82f201c1b5.png', attrs: ['courage','confidence'] },
-    { id: 'water',    label: 'WATER',    accent: '#4aa0e8', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/66a9e50ccfb7415693da7cb3abfc7f75.png', attrs: ['calm','recovery'] },
-    { id: 'electric', label: 'ELECTRIC', accent: '#f2c63a', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/591c765a9f914e62900db8e87af2209d.png', attrs: ['energy','focus'] },
-    { id: 'psychic',  label: 'PSYCHIC',  accent: '#9b4cf0', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/dcdc9a09b33242d99cb792d83c1ca384.png', attrs: ['selfAwareness','calm'] },
-    { id: 'grass',    label: 'GRASS',    accent: '#5aa85a', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/e1003513e8884501b7263824e20bc2f9.png', attrs: ['emotionalBalance','adaptability'] },
-    { id: 'dragon',   label: 'DRAGON',   accent: '#9fa5ad', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/f2db8a7a129246f885c65dbf529f13f7.png', attrs: ['persistence','courage'] }
+    { id: 'fire',     label: 'FIRE',     accent: '#e2592f', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/505abdd9e9ba4b5f82fd5b82f201c1b5.png', attrs: ['courage','purpose'] },
+    { id: 'water',    label: 'WATER',    accent: '#4aa0e8', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/66a9e50ccfb7415693da7cb3abfc7f75.png', attrs: ['stressManagement','sleep'] },
+    { id: 'electric', label: 'ELECTRIC', accent: '#f2c63a', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/591c765a9f914e62900db8e87af2209d.png', attrs: ['movement','nutrition'] },
+    { id: 'psychic',  label: 'PSYCHIC',  accent: '#9b4cf0', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/dcdc9a09b33242d99cb792d83c1ca384.png', attrs: ['emotionalAwareness','cognitiveAgility'] },
+    { id: 'grass',    label: 'GRASS',    accent: '#5aa85a', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/e1003513e8884501b7263824e20bc2f9.png', attrs: ['connection','creativity'] },
+    { id: 'dragon',   label: 'DRAGON',   accent: '#9fa5ad', image: 'https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/f2db8a7a129246f885c65dbf529f13f7.png', attrs: ['cognitiveAgility','courage'] }
   ];
 
   const ATTR_PHRASE = {
-    courage: 'courage', confidence: 'confidence', calm: 'calm', recovery: 'bounce-back',
-    energy: 'drive', focus: 'focus', selfAwareness: 'self-awareness', adaptability: 'flexibility',
-    persistence: 'persistence', emotionalBalance: 'emotional balance'
-  };
+    emotionalAwareness: 'emotional awareness', purpose: 'purpose', cognitiveAgility: 'cognitive agility',
+    creativity: 'creativity', sleep: 'sleep', nutrition: 'nutrition', movement: 'movement',
+    stressManagement: 'stress management', connection: 'connection', courage: 'courage'
+  }
 
   let qIndex = 0;
   let selectedCow = null;
@@ -1686,7 +1612,7 @@
       const b = document.createElement('button');
       b.className = 'rating-btn';
       b.textContent = i;
-      b.setAttribute('aria-label', 'Rate ' + i + ' of 5');
+      b.setAttribute('aria-label', 'Rate ' + i + ' of 10');
       if (gameState.answers[q.key] === i) b.classList.add('selected');
       b.onclick = () => {
         gameState.answers[q.key] = i;
@@ -2095,10 +2021,11 @@
 
   function buildStartingStats() {
     const labels = {
-      courage: 'COURAGE', calm: 'CALM', energy: 'ENERGY', selfAwareness: 'SELF-AWARENESS',
-      adaptability: 'ADAPTABILITY', confidence: 'CONFIDENCE', focus: 'FOCUS', recovery: 'RECOVERY',
-      persistence: 'PERSISTENCE', emotionalBalance: 'EMOTIONAL BALANCE'
-    };
+      emotionalAwareness: 'EMOTIONAL AWARENESS', purpose: 'PURPOSE',
+      cognitiveAgility: 'COGNITIVE AGILITY', creativity: 'CREATIVITY',
+      sleep: 'SLEEP', nutrition: 'NUTRITION', movement: 'MOVEMENT',
+      stressManagement: 'STRESS MANAGEMENT', connection: 'CONNECTION', courage: 'COURAGE'
+    }
     const keys = Object.keys(labels);
     const values = keys.map(k => ({ key: k, value: Number(gameState.stats[k] || 0) }));
     const high = Math.max(...values.map(v => v.value));
@@ -2146,8 +2073,6 @@
     if (preview) { preview.style.display = 'none'; preview.src = ''; }
     document.getElementById('uploadIconSvg').style.display = 'block';
     document.getElementById('uploadHintText').textContent = 'TAP TO UPLOAD PHOTO\nFROM YOUR CAMERA OR GALLERY';
-    document.getElementById('ageHeading').innerHTML = 'YOUR NEXT ANSWER SHAPES YOUR JOURNEY.';
-    document.getElementById('ageDialogue').innerHTML = '<span class="teal">NICE TO MEET YOU!</span><br>HOW OLD ARE YOU?';
     document.getElementById('chooseBtn').disabled = true;
     document.getElementById('mapActionBtn').disabled = false;
     document.querySelectorAll('.cow-pick-card').forEach(c => c.classList.remove('selected'));
