@@ -841,7 +841,9 @@
   .stat-callout-score { display: block; margin-top: 5px; font-size: 11px; color: var(--moo-teal); text-align: center; }
   .stats-cow-panel { width: 100%; display: flex; align-items: center; justify-content: center; gap: 16px; background: rgba(255,255,255,.7); border: 3px solid var(--moo-dark); border-radius: 7px; box-shadow: 4px 4px 0 var(--moo-dark); padding: 10px; margin-bottom: 18px; }
   .stats-cow-panel .cow-art-image { width: 92px; height: 92px; }
-  .stats-cow-copy { font-family: var(--pixel-font); font-size: 7px; color: var(--moo-dark); line-height: 1.8; }
+  .stats-cow-copy { font-family: var(--pixel-font); color: var(--moo-dark); line-height: 1.8; text-align: left; }
+  .stats-cow-name { display: block; color: var(--moo-teal); font-size: 13px; margin-bottom: 8px; overflow-wrap: anywhere; }
+  .stats-cow-meta { display: block; font-size: 7px; }
   .resilience-score { width: 100%; background: var(--moo-teal); color: white; border: 4px solid var(--moo-dark); border-radius: 7px; box-shadow: 4px 4px 0 var(--moo-dark); padding: 14px 10px; text-align: center; margin-bottom: 18px; }
   .resilience-score-label { display: block; font-family: var(--pixel-font); font-size: 7px; letter-spacing: 1px; margin-bottom: 8px; }
   .resilience-score-number { display: block; font-family: var(--pixel-font); font-size: 25px; line-height: 1; }
@@ -1332,56 +1334,35 @@
 </div>
 
 
-<!-- ===================================================
-     PAGE 9: READY / TRAINING
-     =================================================== -->
-<div id="page-9" class="game-page">
-  <div class="page-header">
-    <button class="back-btn" onclick="goToPage('page-8')">BACK</button>
-    <div class="mini-logo">
-      <div class="mini-moo-box"><span>MOO</span></div>
-      <span class="mini-mentum">mentum</span>
-    </div>
-    <div style="width:60px"></div>
-  </div>
-
-  <div class="section-badge">TRAINING READY</div>
-
-  <div class="ready-cow">
-    <img class="big-cow cow-art-image" id="readyCowImg" src="https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/505abdd9e9ba4b5f82fd5b82f201c1b5.png" alt="Selected cow" />
-    <p class="ready-type-line" id="readyTypeLine">LVL 21 FIRE COW<br>READY FOR THE ADVENTURE</p>
-  </div>
-
-  <div class="dialogue-box ready-dialogue" style="margin-bottom:18px;">
-    <p class="dialogue-text" id="readyText"><span class="teal">COME ON MIA, LET'S GO!</span></p>
-  </div>
-  <svg class="narrator-cow ready-dialogue-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
-
-  <p class="placeholder-note" id="trainingBlockNote" style="display:none">
-    FIRST TRAINING CHALLENGE COMING NEXT.<br>COMPLETE BADGES TO POWER UP YOUR COW FURTHER.
-  </p>
-
-  <button class="primary-btn" id="startTrainBtn" onclick="startTraining()">START TRAINING</button>
-</div>
-
-
 <!-- PAGE 10: STARTING STATS -->
 <div id="page-10" class="game-page">
   <div class="page-header">
-    <button class="back-btn" onclick="returnToReady()">BACK</button>
+    <button class="back-btn" onclick="goToPage('page-8')">BACK</button>
     <div class="mini-logo"><div class="mini-moo-box"><span>MOO</span></div><span class="mini-mentum">mentum</span></div>
     <div style="width:60px"></div>
   </div>
+
   <div class="section-badge">YOUR STARTING STATS</div>
   <div class="section-heading">YOUR ADVENTURE<br>STARTS HERE.</div>
-  <p class="stats-intro">EVERY TRAINER HAS STRENGTHS.<br>HERE IS YOURS.</p>
+
+  <div class="stats-cow-panel">
+    <img class="cow-art-image" id="statsCowImg" src="https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/505abdd9e9ba4b5f82fd5b82f201c1b5.png" alt="Selected cow">
+    <p class="stats-cow-copy" id="statsCowCopy">YOUR COW<br>LVL 1 FIRE COW</p>
+  </div>
+
+  <div class="resilience-score">
+    <span class="resilience-score-label">YOUR RESILIENCE SCORE</span>
+    <span class="resilience-score-number" id="resilienceScoreDisplay">- / 100</span>
+  </div>
+
+  <p class="stats-intro">YOUR TEN MENTAL FITNESS PILLARS.</p>
   <div class="stats-grid" id="statsGrid"></div>
+
   <div class="stat-callouts">
     <div class="stat-callout"><span class="stat-callout-label">STRONGEST VALUE</span><span class="stat-callout-value" id="highestStat">-</span></div>
     <div class="stat-callout"><span class="stat-callout-label">WEAKEST VALUE</span><span class="stat-callout-value" id="lowestStat">-</span></div>
   </div>
-  <div class="stats-cow-panel"><img class="cow-art-image" id="statsCowImg" src="https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/505abdd9e9ba4b5f82fd5b82f201c1b5.png" alt="Selected cow"><p class="stats-cow-copy" id="statsCowCopy">YOUR COW<br>IS READY TO GROW.</p></div>
-  <div class="resilience-score"><span class="resilience-score-label">YOUR RESILIENCE SCORE</span><span class="resilience-score-number" id="resilienceScoreDisplay">- / 100</span></div>
+
   <p class="stats-note">THESE ARE YOUR STARTING VALUES.<br>BADGES WILL HELP YOU POWER UP.</p>
   <button class="primary-btn" onclick="beginFirstChallenge()">BEGIN FIRST CHALLENGE</button>
 </div>
@@ -1715,36 +1696,11 @@
     }
     document.getElementById('cowNameError').style.display = 'none';
     gameState.starterName = val;
-    goToPage('page-9');
-    buildReady();
-  }
-
-  // ============ READY SCREEN ============
-  function buildReady() {
-    const lvl = gameState.playerAge;
-    const cow = gameState.starterCow;
-    const name = gameState.starterName.toUpperCase();
-    document.getElementById('readyCowImg').src = COW_TYPES.find(c => c.id === gameState.starterType).image;
-    document.getElementById('readyCowImg').alt = gameState.starterCow + ' cow';
-    document.getElementById('readyTypeLine').innerHTML =
-      'LVL ' + lvl + ' ' + cow + ' COW<br>READY FOR THE ADVENTURE';
-    document.getElementById('readyText').innerHTML =
-      '<span class="teal">COME ON ' + name + ', LET&rsquo;S GO!</span>';
-    // Hide training placeholder until START TRAINING
-    document.getElementById('trainingBlockNote').style.display = 'none';
-    document.getElementById('startTrainBtn').style.display = 'block';
-  }
-
-  function startTraining() {
     buildStartingStats();
     goToPage('page-10');
   }
 
-  function returnToReady() {
-    buildReady();
-    goToPage('page-9');
-  }
-
+  // = BEGIN ADVENTURE
   function beginFirstChallenge() {
     buildMap();
     goToPage('page-11');
@@ -2014,7 +1970,9 @@
     if (cow) {
       document.getElementById('statsCowImg').src = cow.image;
       document.getElementById('statsCowImg').alt = cow.label + ' cow';
-      document.getElementById('statsCowCopy').innerHTML = 'YOUR ' + cow.label + ' COW<br>IS READY TO GROW.';
+      document.getElementById('statsCowCopy').innerHTML =
+        '<span class="stats-cow-name">' + gameState.starterName.toUpperCase() + '</span>' +
+        '<span class="stats-cow-meta">LVL ' + gameState.playerAge + ' ' + cow.label + ' COW</span>';
     }
     document.getElementById('resilienceScoreDisplay').textContent = gameState.resilienceScore + ' / 100';
   }
