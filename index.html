@@ -1361,7 +1361,7 @@
 <!-- PAGE 10: STARTING STATS -->
 <div id="page-10" class="game-page">
   <div class="page-header">
-    <button class="back-btn" onclick="goToPage('page-9')">BACK</button>
+    <button class="back-btn" onclick="returnToReady()">BACK</button>
     <div class="mini-logo"><div class="mini-moo-box"><span>MOO</span></div><span class="mini-mentum">mentum</span></div>
     <div style="width:60px"></div>
   </div>
@@ -1730,10 +1730,13 @@
   }
 
   function startTraining() {
-    document.getElementById('trainingBlockNote').style.display = 'block';
-    document.getElementById('startTrainBtn').style.display = 'none';
     buildStartingStats();
     goToPage('page-10');
+  }
+
+  function returnToReady() {
+    buildReady();
+    goToPage('page-9');
   }
 
   function beginFirstChallenge() {
