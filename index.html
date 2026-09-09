@@ -451,6 +451,14 @@
     transform: translate(3px, 3px);
     box-shadow: 2px 2px 0px var(--moo-dark);
   }
+  .primary-btn:disabled {
+    background: #cdd6d2;
+    border-color: #999;
+    color: #666;
+    box-shadow: 2px 2px 0 #999;
+    cursor: not-allowed;
+    transform: none;
+  }
 
   .error-msg {
     font-family: var(--pixel-font);
@@ -1408,8 +1416,12 @@
     <button class="map-node final" data-gym="8" style="left:78%;top:10%;" onclick="openGym(8)" aria-label="Stress Mountain locked">★</button>
     <span class="map-label" id="finalBossLabel" style="left:77%;top:15%;">FINAL BOSS<br>LOCKED</span>
   </div>
-  <div class="map-status" id="mapStatus"><span class="teal">BADGES: 0/8</span><br>GYM 1 IS WAITING FOR YOUR KEYNOTE UNLOCK WORD.</div>
-  <button class="primary-btn" id="mapActionBtn" onclick="openCurrentGym()">ENTER MAD MARSH</button>
+  <div class="map-status" id="mapStatus"><span class="teal">BADGES: 0/8</span><br>MAD MARSH IS WAITING FOR YOUR PASSWORD.</div>
+  <div class="field-group" id="mapPasswordGroup">
+    <label class="field-label" for="mapGymPassword">GYM PASSWORD</label>
+    <input class="gym-password" id="mapGymPassword" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ENTER PASSWORD" aria-label="Gym password" oninput="checkMapPassword()">
+  </div>
+  <button class="primary-btn" id="mapActionBtn" onclick="openCurrentGym()" disabled>NEXT</button>
 </div>
 
 <!-- PAGE 12: MAD MARSH BATTLE -->
@@ -1449,12 +1461,6 @@
       <h3 class="badge-win-title" id="badgeWinTitle">COURAGE BADGE WON!</h3>
       <p class="badge-win-copy" id="badgeWinCopy">YOU FACED THE FEAR AND CHOSE TO APPROACH.<br><span class="teal">COURAGE +1</span></p>
       <button class="primary-btn" id="claimBadgeBtn" onclick="claimGymBadge()">CLAIM BADGE</button>
-      <div class="post-badge-gate" id="postBadgeGate">
-        <p class="badge-win-copy" id="postBadgeCopy">BADGE SECURED. ENTER THE KEYNOTE PASSWORD TO OPEN THE ROUTE TO IRON FARM.</p>
-        <input class="gym-password" id="gymPassword" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ENTER PASSWORD" aria-label="Mad Marsh password">
-        <div class="gym-gate-error" id="gymGateError" aria-live="polite"></div>
-        <button class="primary-btn" onclick="submitGymPassword()">OPEN NEXT ROUTE</button>
-      </div>
     </div>
   </div>
 </div>
@@ -1479,7 +1485,8 @@
     starterCow: null,
     starterAccent: null,
     starterStrengths: {},
-    recommended: null
+    recommended: null,
+    mapUnlockedGym: null
   };
 
   // ============ NAVIGATION ============
@@ -1831,9 +1838,14 @@
     document.getElementById('mapStatus').innerHTML = gameState.badges.length < 8
       ? '<span class="teal">BADGES: ' + gameState.badges.length + '/8</span><br>' + destination.name + ' IS WAITING FOR YOUR PASSWORD.'
       : '<span class="teal">ALL 8 BADGES EARNED</span><br>STRESS MOUNTAIN IS OPEN. THE FINAL BOSS IS WAITING.';
-    document.getElementById('mapActionBtn').textContent = gameState.badges.length < 8
-      ? 'ENTER ' + destination.name
-      : 'CLIMB STRESS MOUNTAIN';
+    const mapPassword = document.getElementById('mapGymPassword');
+    const mapAction = document.getElementById('mapActionBtn');
+    const passwordGroup = document.getElementById('mapPasswordGroup');
+    mapPassword.value = '';
+    mapPassword.setAttribute('aria-label', destination.name + ' password');
+    passwordGroup.style.display = 'block';
+    mapAction.textContent = 'NEXT';
+    mapAction.disabled = gameState.mapUnlockedGym !== unlockedIndex;
     document.getElementById('finalBossLabel').innerHTML = gameState.badges.length >= 8 ? 'FINAL BOSS<br>READY' : 'FINAL BOSS<br>LOCKED';
 
     const markerIndex = gameState.badges.length === 0 ? -1 : Math.min(gameState.badges.length - 1, 8);
@@ -1846,8 +1858,22 @@
     }
   }
 
+  function checkMapPassword() {
+    const input = document.getElementById('mapGymPassword');
+    const index = Math.min(gameState.badges.length, 8);
+    input.value = input.value.toUpperCase();
+    const correct = normalisePassword(input.value) === GYMS[index].password;
+    gameState.mapUnlockedGym = correct ? index : null;
+    document.getElementById('mapActionBtn').disabled = !correct;
+  }
+
   function openCurrentGym() {
-    openGym(Math.min(gameState.badges.length, 8));
+    const index = Math.min(gameState.badges.length, 8);
+    if (gameState.mapUnlockedGym !== index) {
+      document.getElementById('mapGymPassword').focus();
+      return;
+    }
+    openGym(index);
   }
 
   function openGym(index) {
@@ -1858,6 +1884,11 @@
     }
     if (index < gameState.badges.length) {
       document.getElementById('mapStatus').innerHTML = '<span class="teal">' + GYMS[index].name + ' CLEARED</span><br>THIS BADGE IS ALREADY YOURS.';
+      return;
+    }
+    if (gameState.mapUnlockedGym !== index) {
+      document.getElementById('mapStatus').innerHTML = '<span class="teal">' + GYMS[index].name + ' IS LOCKED</span><br>ENTER THE KEYNOTE PASSWORD BELOW.';
+      document.getElementById('mapGymPassword').focus();
       return;
     }
     if (index > 1) {
@@ -1875,10 +1906,8 @@
     battleBadgeClaimed = false;
     document.getElementById('battleActive').style.display = 'block';
     document.getElementById('badgeWin').classList.remove('show');
-    document.getElementById('postBadgeGate').classList.remove('show');
     document.getElementById('claimBadgeBtn').style.display = 'block';
-    document.getElementById('gymPassword').value = '';
-    document.getElementById('gymGateError').textContent = '';
+    document.getElementById('claimBadgeBtn').textContent = 'CLAIM BADGE';
     const cow = COW_TYPES.find(c => c.id === gameState.starterType);
     if (cow) document.getElementById('battleCowImg').src = cow.image;
     document.getElementById('battlePlayerName').textContent = (gameState.starterName || 'YOUR COW').toUpperCase();
@@ -1894,9 +1923,6 @@
     document.getElementById('wonBadge').setAttribute('aria-label', gym.name + ' ' + gym.ability + ' badge');
     document.getElementById('badgeWinTitle').textContent = gym.ability + ' BADGE WON!';
     document.getElementById('badgeWinCopy').innerHTML = gym.winCopy + '<br><span class="teal">' + gym.ability + ' +1</span>';
-    const next = GYMS[index + 1];
-    document.getElementById('postBadgeCopy').textContent = 'BADGE SECURED. ENTER THE KEYNOTE PASSWORD TO OPEN THE ROUTE TO ' + next.name + '.';
-    document.getElementById('gymPassword').setAttribute('aria-label', gym.name + ' password');
     renderGymQuestion();
     goToPage('page-12');
   }
@@ -1943,52 +1969,27 @@
   }
 
   function claimGymBadge() {
-    if (battleBadgeClaimed) return;
+    if (battleBadgeClaimed) {
+      returnToMap();
+      return;
+    }
     battleBadgeClaimed = true;
     const gym = GYMS[selectedGymIndex];
-    document.getElementById('claimBadgeBtn').style.display = 'none';
-    document.getElementById('postBadgeGate').classList.add('show');
     const current = Number(gameState.currentStats[gym.abilityKey] || 0);
     if (current < 10) gameState.currentStats[gym.abilityKey] = current + 1;
     gameState.resilienceScore = Math.min(100, gameState.resilienceScore + 1);
+    if (!gameState.badges.includes(selectedGymIndex)) gameState.badges.push(selectedGymIndex);
+    gameState.currentGym = selectedGymIndex + 1;
+    gameState.mapUnlockedGym = null;
     document.getElementById('badgeWinCopy').innerHTML = gym.winCopy + '<br><span class="teal">' + gym.ability + ' +1</span><br><br>CONGRATULATIONS, YOUR RESILIENCE SCORE HAS INCREASED TO <span class="teal">' + gameState.resilienceScore + '</span>.';
-    setTimeout(() => document.getElementById('gymPassword').focus(), 50);
+    const claimButton = document.getElementById('claimBadgeBtn');
+    claimButton.textContent = 'RETURN TO MAP';
   }
 
   function returnToMap() {
     buildMap();
     goToPage('page-11');
   }
-
-  function submitGymPassword() {
-    const gym = GYMS[selectedGymIndex];
-    const entered = normalisePassword(document.getElementById('gymPassword').value);
-    if (!battleBadgeClaimed) return;
-    if (entered !== gym.password) {
-      document.getElementById('gymGateError').textContent = 'PASSWORD REJECTED. LISTEN FOR THE KEYNOTE PHRASE AND TRY AGAIN.';
-      return;
-    }
-    if (selectedGymIndex < 8) {
-      if (!gameState.badges.includes(selectedGymIndex)) gameState.badges.push(selectedGymIndex);
-      gameState.currentGym = selectedGymIndex + 1;
-      buildMap();
-      const next = GYMS[selectedGymIndex + 1];
-      document.getElementById('mapStatus').innerHTML = '<span class="teal">' + gym.name + ' CLEARED. BADGE EARNED!</span><br>' + next.name + ' IS NOW UNLOCKED.';
-      goToPage('page-11');
-    } else {
-      gameState.currentGym = 9;
-      document.getElementById('mapStatus').innerHTML = '<span class="teal">I AM THE POWER</span><br>STRESS MOUNTAIN CLEARED. THE POWER WAS YOURS TO CHOOSE.';
-      document.getElementById('mapActionBtn').textContent = 'FINAL BOSS DEFEATED';
-      document.getElementById('mapActionBtn').disabled = true;
-      const finalNode = document.querySelector('.map-node[data-gym="8"]');
-      finalNode.classList.remove('current');
-      finalNode.classList.add('cleared');
-      document.getElementById('finalBossLabel').innerHTML = 'YOU CHOSE<br>THE POWER';
-    }
-  }
-
-  document.getElementById('gymPassword').addEventListener('input', function () { this.value = this.value.toUpperCase(); });
-  document.getElementById('gymPassword').addEventListener('keydown', function (event) { if (event.key === 'Enter') submitGymPassword(); });
 
   function buildStartingStats() {
     const labels = {
@@ -2035,6 +2036,7 @@
     gameState.resilienceScore = 0;
     gameState.starterCow = null;
     gameState.starterAccent = null;
+    gameState.mapUnlockedGym = null;
     qIndex = 0;
     selectedCow = null;
 
