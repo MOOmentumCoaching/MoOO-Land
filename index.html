@@ -683,7 +683,6 @@
   .game-page .primary-btn { margin-top: 14px; }
   #page-6 .rating-row { margin-top: clamp(12px, 2vh, 24px); margin-bottom: clamp(12px, 2vh, 20px); }
   #page-7 .cow-grid { margin-top: clamp(16px, 3vh, 30px); margin-bottom: clamp(20px, 4vh, 38px); }
-  #page-8 .ready-cow { margin: clamp(10px, 2vh, 24px) 0 clamp(18px, 3vh, 34px); }
   #page-9 .ready-cow { margin: clamp(10px, 2vh, 24px) 0 clamp(22px, 4vh, 42px); }
 
   .narrator-cow {
@@ -1095,10 +1094,9 @@
   </div>
 
   <div class="section-badge">STEP 2 OF 2</div>
-  <div class="section-heading">EVERY FINAL BOSS NEEDS A FACE.</div>
 
   <div class="dialogue-box" style="margin-bottom:16px;">
-    <p class="dialogue-text">YOUR FINAL CHALLENGE WILL BE PERSONAL.<br><span class="teal">UPLOAD A PHOTO OF YOU.</span><br>A SELFIE IS PERFECT.</p>
+    <p class="dialogue-text"><span class="teal">UPLOAD A PHOTO OF YOU.</span><br>A SELFIE IS PERFECT.</p>
   </div>
   <svg class="narrator-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
 
@@ -1258,7 +1256,6 @@
     <div style="width:60px"></div>
   </div>
 
-  <div class="section-badge">YOUR PARTNER</div>
   <div class="rec-banner" id="recBanner">YOUR ANSWERS LEAN<br>TOWARD A COMPANION...</div>
 
   <div class="cow-grid">
@@ -1294,50 +1291,19 @@
     </button>
   </div>
 
-  <button class="choose-btn" id="chooseBtn" onclick="confirmCow()" disabled>CHOOSE THIS COW</button>
-</div>
-
-
-<!-- ===================================================
-     PAGE 8: NAME THE COW
-     =================================================== -->
-<div id="page-8" class="game-page">
-  <div class="page-header">
-    <button class="back-btn" onclick="goToPage('page-7')">BACK</button>
-    <div class="mini-logo">
-      <div class="mini-moo-box"><span>MOO</span></div>
-      <span class="mini-mentum">mentum</span>
-    </div>
-    <div style="width:60px"></div>
-  </div>
-
-  <div class="section-badge">NAME YOUR COW</div>
-
-  <div class="ready-cow">
-    <img class="big-cow cow-art-image" id="previewCowImg" src="https://cdn.omniultra.imagine.art/ceaed39a-684f-4da0-a1e9-ca9f91ee1c26/media/image/505abdd9e9ba4b5f82fd5b82f201c1b5.png" alt="Selected cow" />
-    <span class="cow-card-name" id="previewName">THE FIRE COW</span>
-  </div>
-
-  <div class="dialogue-box" style="margin-bottom:10px;">
-    <p class="dialogue-text">A TRUE PARTNER DESERVES A NAME.<br><span class="teal">WHAT WILL YOU CALL THIS ONE?</span></p>
-  </div>
-  <svg class="narrator-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
-
   <div class="field-group">
     <label class="field-label" for="starterNameInput">YOUR COW'S NAME</label>
-    <input class="field-input" type="text" id="starterNameInput" placeholder="e.g. Moo Lips" maxlength="16" autocomplete="off">
+    <input class="field-input" type="text" id="starterNameInput" placeholder="e.g. Moo Lips" maxlength="16" autocomplete="off" oninput="updateCowContinue()">
   </div>
-
   <p class="error-msg" id="cowNameError">GIVE YOUR COW A NAME TO CONTINUE!</p>
-
-  <button class="primary-btn" onclick="submitCowName()">NAME YOUR COW</button>
+  <button class="choose-btn" id="chooseBtn" onclick="confirmCow()" disabled>NEXT</button>
 </div>
 
 
 <!-- PAGE 10: STARTING STATS -->
 <div id="page-10" class="game-page">
   <div class="page-header">
-    <button class="back-btn" onclick="goToPage('page-8')">BACK</button>
+    <button class="back-btn" onclick="goToPage('page-7')">BACK</button>
     <div class="mini-logo"><div class="mini-moo-box"><span>MOO</span></div><span class="mini-mentum">mentum</span></div>
     <div style="width:60px"></div>
   </div>
@@ -1538,16 +1504,16 @@
 
   // ============ RESILIENCE QUESTIONNAIRE ============
   const QUESTIONS = [
-    { key: 'emotionalAwareness', name: 'EMOTIONAL AWARENESS', text: 'I AM AWARE OF THE EMOTIONS<br><span class="teal">I FEEL AS THEY ARISE.</span>' },
-    { key: 'purpose', name: 'PURPOSE', text: 'I HAVE A CLEAR SENSE OF WHAT<br>MATTERS TO ME AND WHAT<br><span class="teal">I AM WORKING TOWARDS.</span>' },
-    { key: 'cognitiveAgility', name: 'COGNITIVE AGILITY', text: 'I CAN ADJUST MY THINKING WHEN<br>CIRCUMSTANCES OR NEW INFORMATION<br><span class="teal">REQUIRE IT.</span>' },
-    { key: 'creativity', name: 'CREATIVITY', text: 'I CAN GENERATE NEW IDEAS<br>AND FIND DIFFERENT WAYS<br><span class="teal">TO SOLVE PROBLEMS.</span>' },
-    { key: 'sleep', name: 'SLEEP', text: 'I CONSISTENTLY GET ENOUGH<br>GOOD-QUALITY SLEEP TO<br><span class="teal">FUNCTION AT MY BEST.</span>' },
-    { key: 'nutrition', name: 'NUTRITION', text: 'I REGULARLY FUEL MY BODY<br>IN A WAY THAT SUPPORTS MY<br><span class="teal">MENTAL AND PHYSICAL PERFORMANCE.</span>' },
-    { key: 'movement', name: 'MOVEMENT', text: 'I REGULARLY MOVE MY BODY<br>ENOUGH TO SUPPORT MY MENTAL<br><span class="teal">AND PHYSICAL WELLBEING.</span>' },
-    { key: 'stressManagement', name: 'STRESS MANAGEMENT', text: 'I CAN MANAGE PRESSURE<br>WITHOUT ALLOWING IT TO<br><span class="teal">OVERWHELM ME.</span>' },
-    { key: 'connection', name: 'CONNECTION', text: 'I MAINTAIN MEANINGFUL RELATIONSHIPS<br>AND FEEL CONNECTED<br><span class="teal">TO OTHER PEOPLE.</span>' },
-    { key: 'courage', name: 'COURAGE', text: 'I TAKE ACTION WHEN SOMETHING<br>IMPORTANT FEELS DIFFICULT,<br><span class="teal">FRIGHTENING OR UNCERTAIN.</span>' }
+    { key: 'emotionalAwareness', name: 'EMOTIONAL AWARENESS', text: 'I AM AWARE OF MY EMOTIONS WHEN I FEEL THEM ARISE' },
+    { key: 'purpose', name: 'PURPOSE', text: 'I HAVE A CLEAR SENSE OF WHAT I WANT TO WORK TOWARDS' },
+    { key: 'cognitiveAgility', name: 'COGNITIVE AGILITY', text: 'I CAN ADJUST MY THINKING AND PERSPECTIVE WITH NEW INFORMATION' },
+    { key: 'creativity', name: 'CREATIVITY', text: 'I CAN CREATE NEW IDEAS THAT CAN EASILY SOLVE MY PROBLEMS' },
+    { key: 'sleep', name: 'SLEEP', text: 'I GET ENOUGH GOOD-QUALITY SLEEP' },
+    { key: 'nutrition', name: 'NUTRITION', text: 'I REGULARLY FUEL MY BODY WITH FOODS THAT SUPPORT MY MENTAL PERFORMANCE' },
+    { key: 'movement', name: 'MOVEMENT', text: 'I REGULARLY MOVE MY BODY ENOUGH TO POSITIVELY SUPPORT MY MENTAL WELLBEING' },
+    { key: 'stressManagement', name: 'STRESS MANAGEMENT', text: 'I CAN MANAGE PRESSURE WITHOUT IT FEELING TOO OVERWHELMING' },
+    { key: 'connection', name: 'CONNECTION', text: 'I MAINTAIN MEANINGFUL RELATIONSHIPS TO BE CONNECTED WITH OTHER PEOPLE' },
+    { key: 'courage', name: 'COURAGE', text: 'I CAN QUICKLY TAKE ACTION WHEN SOMETHING IMPORTANT FEELS DIFFICULT OR UNCERTAIN' }
   ]
 
   const COW_TYPES = [
@@ -1654,48 +1620,41 @@
     });
 
     document.getElementById('recBanner').innerHTML =
-      'YOU SEEM LIKE A <span class="teal">' + best.label + ' TYPE</span>,<br>' +
-      'BUT YOU CAN PICK BELOW.';
+      'YOU SEEM LIKE <span class="teal">' + best.label + ' TYPE</span>,<br>' +
+      'BUT YOU CAN PICK WHO YOU WANT.';
   }
 
   // ============ COW SELECTION ============
+  function updateCowContinue() {
+    const named = document.getElementById('starterNameInput').value.trim().length > 0;
+    document.getElementById('chooseBtn').disabled = !selectedCow || !named;
+    if (named) document.getElementById('cowNameError').style.display = 'none';
+  }
+
   function selectCow(id) {
+    if (!COW_TYPES.some(c => c.id === id)) return;
     selectedCow = id;
     document.querySelectorAll('.cow-pick-card').forEach(c => c.classList.remove('selected'));
     document.querySelector('.cow-pick-card[data-type="' + id + '"]').classList.add('selected');
-    document.getElementById('chooseBtn').disabled = false;
+    updateCowContinue();
   }
 
   function confirmCow() {
     if (!selectedCow) return;
+    const val = document.getElementById('starterNameInput').value.trim();
+    if (!val) {
+      document.getElementById('cowNameError').style.display = 'block';
+      updateCowContinue();
+      return;
+    }
     const cow = COW_TYPES.find(c => c.id === selectedCow);
     gameState.starterType = cow.id;
     gameState.starterAccent = cow.accent;
     gameState.starterCow = cow.label;
+    gameState.starterName = val;
     gameState.starterStrengths = {};
     cow.attrs.forEach(a => { gameState.starterStrengths[a] = gameState.stats[a] || 0; });
-
-    goToPage('page-8');
-    buildNamePreview(cow);
-  }
-
-  // ============ NAME THE COW ============
-  function buildNamePreview(cow) {
-    document.getElementById('previewCowImg').src = cow.image;
-    document.getElementById('previewCowImg').alt = cow.label + ' cow';
-    document.getElementById('previewName').textContent = 'THE ' + cow.label + ' COW';
     document.getElementById('cowNameError').style.display = 'none';
-    document.getElementById('starterNameInput').value = '';
-  }
-
-  function submitCowName() {
-    const val = document.getElementById('starterNameInput').value.trim();
-    if (!val) {
-      document.getElementById('cowNameError').style.display = 'block';
-      return;
-    }
-    document.getElementById('cowNameError').style.display = 'none';
-    gameState.starterName = val;
     buildStartingStats();
     goToPage('page-10');
   }
