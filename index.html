@@ -892,7 +892,7 @@
   .battle-hp { flex: 1; height: 9px; border: 2px solid var(--moo-dark); background: #d9dfdc; }
   .battle-hp-fill { width: 100%; height: 100%; background: #42a85e; transition: width .35s steps(3,end), background .2s; }
   .boss-art { position: absolute; right: -5%; top: 68px; width: 69%; height: 245px; object-fit: contain; image-rendering: pixelated; mix-blend-mode: multiply; filter: drop-shadow(5px 7px 0 rgba(0,0,0,.18)); }
-  .player-battle-cow { position: absolute; left: -5%; bottom: 0; width: 49%; height: 175px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(4px 5px 0 rgba(0,0,0,.2)); }
+  .player-battle-cow { position: absolute; left: 3%; bottom: 4px; width: 40%; height: 140px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(4px 5px 0 rgba(0,0,0,.2)); }
   .player-panel { position: absolute; right: 16px; bottom: 18px; z-index: 3; width: 58%; background: white; border: 3px solid var(--moo-dark); border-radius: 18px 5px 5px 5px; box-shadow: 3px 3px 0 var(--moo-dark); padding: 9px 10px 8px 18px; }
   .player-panel .battle-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .battle-dialogue { border-top: 4px solid var(--moo-dark); background: white; padding: 15px; min-height: 220px; }
@@ -911,7 +911,7 @@
   .post-badge-gate { display: none; margin-top: 18px; padding-top: 18px; border-top: 3px dashed var(--moo-dark); }
   .post-badge-gate.show { display: block; }
   @keyframes badgeFloat { 50% { transform: translateY(-8px) rotate(2deg); } }
-  @media (max-width: 390px) { .battle-arena { min-height: 340px; } .boss-art { height: 210px; top: 72px; } .player-battle-cow { height: 145px; } }
+  @media (max-width: 390px) { .battle-arena { min-height: 340px; } .boss-art { height: 210px; top: 72px; } .player-battle-cow { height: 115px; } }
   @keyframes mapPulse { 50% { transform: translate(-50%,-50%) scale(1.1); box-shadow: 4px 4px 0 var(--moo-dark), 0 0 0 4px rgba(43,158,143,.28); } }
 
   .final-portrait { width: min(70%,280px); height: 280px; object-fit: contain; margin: 20px auto; }
@@ -961,6 +961,23 @@
   .takeaway-pillar { font-size:12px; line-height:1.6; color:var(--moo-dark); }
   .takeaway-pillar span { display:block; font-size:9px; color:var(--moo-teal); margin-top:4px; }
   .takeaway-text { font-size:7px; line-height:1.9; color:var(--moo-dark); margin-top:8px; }
+  .takeaway-tips { margin:0; padding:0; list-style:none; counter-reset:tip; text-align:left; }
+  .takeaway-tips li { counter-increment:tip; position:relative; font-size:7px; line-height:1.9; color:var(--moo-dark); background:#e8f6f3; border:2px dashed var(--moo-logo-teal); border-radius:4px; padding:9px 8px 9px 34px; margin-bottom:8px; }
+  .takeaway-tips li::before { content:counter(tip); position:absolute; left:8px; top:8px; width:18px; height:18px; line-height:18px; text-align:center; background:var(--moo-logo-teal); color:#fff; border-radius:3px; font-size:8px; }
+
+  /* BATTLE HITS */
+  .cow-attack { animation: cowAttack .6s steps(7,end); z-index: 5; }
+  .boss-attack { animation: bossAttack .55s steps(6,end); }
+  .took-hit { animation: tookHit .45s steps(6,end); }
+  @keyframes cowAttack { 45% { transform: translate(85%, -30%); } }
+  @keyframes bossAttack { 40% { transform: translate(-30%, 4%); } }
+  @keyframes tookHit { 0%,100% { transform:translateX(0); filter:none; } 20%,60% { transform:translateX(-6px); filter:brightness(1.8) saturate(.4); } 40%,80% { transform:translateX(6px); filter:none; } }
+  .battle-hp-fill.low { background:#d9a425; }
+  .battle-answer.wrong { opacity:.45; text-decoration:line-through; background:#f3dede; box-shadow:none; transform:translate(2px,2px); cursor:not-allowed; }
+  .battle-answer.right { background:#dff3e5; border-color:#25834a; }
+  .battle-answer:disabled { cursor:default; color:var(--moo-dark); }
+  .battle-answer.wrong:disabled { color:var(--moo-dark); }
+  .battle-next { margin-top:16px; }
   .takeaway-action { background:#e8f6f3; border:2px dashed var(--moo-teal); border-radius:4px; padding:10px 8px; margin-top:0; }
   .takeaway-tool { display:flex; align-items:center; gap:10px; margin-top:16px; padding-top:14px; border-top:2px solid #dcebe7; text-align:left; }
   .takeaway-tool .takeaway-text { margin:0; }
@@ -1413,7 +1430,7 @@
         <div class="player-panel" aria-label="Your cow's battle status">
           <div class="battle-name resilience-status" id="battlePlayerScore">RESILIENCE <span id="battleResilienceNumber" class="resilience-number" aria-live="polite"></span></div>
           <div class="battle-name"><span id="battlePlayerName">YOUR COW</span> <span id="battlePlayerLevel" style="float:right">LV.1</span></div>
-          <div class="battle-hp-row"><span>HP</span><div class="battle-hp"><div class="battle-hp-fill" style="width:100%"></div></div></div>
+          <div class="battle-hp-row"><span>HP</span><div class="battle-hp"><div class="battle-hp-fill" id="playerHpFill" style="width:100%"></div></div></div>
         </div>
       </div>
       <div class="battle-dialogue">
@@ -1751,53 +1768,57 @@
   let battleBadgeClaimed = false;
   let battlePending = false;
   let battleTimer = null;
+  // Player HP refills every gym. Wrong answers cost a little; right answers take a quarter of the boss's HP.
+  const WRONG_ANSWER_DAMAGE = 10;
+  const PLAYER_HP_FLOOR = 10;
+  let playerHp = 100;
 
   // Four questions per gym: two on each of the gym's two pillars.
   const GYM_QUESTIONS = [
     [
-      {pillar:"emotionalAwareness",question:"WHAT IS EMOTIONAL AWARENESS?",answers:["NEVER FEELING NEGATIVE EMOTIONS", "RECOGNISING YOUR EMOTIONS, TRIGGERS AND PATTERNS", "HIDING HOW YOU FEEL FROM OTHERS"],correct:1,explain:"CORRECT. NOTICING WHAT IS HAPPENING INSIDE YOU GIVES YOU A CHOICE IN HOW YOU RESPOND."},
-      {pillar:"emotionalAwareness",question:"YOU FEEL FRUSTRATION BUILDING DURING A HARD WORKOUT. WHAT HELPS MOST?",answers:["PUSH IT DOWN AND IGNORE IT", "QUIT BEFORE IT GETS WORSE", "NOTICE IT AND NAME IT BEFORE IT SHAPES WHAT YOU DO"],correct:2,explain:"CORRECT. SPOTTING FRUSTRATION EARLY GIVES YOU A BETTER CHANCE TO DEAL WITH IT."},
-      {pillar:"purpose",question:"WHAT DOES PURPOSE GIVE YOU?",answers:["A CLEAR SENSE OF WHAT MATTERS, SO YOUR ACTIONS HAVE MEANING", "MOTIVATION THAT NEVER DIPS", "A PLAN THAT NEVER NEEDS TO CHANGE"],correct:0,explain:"CORRECT. PURPOSE IS KNOWING WHAT MATTERS TO YOU AND WHERE YOU WANT TO HEAD."},
-      {pillar:"purpose",question:"MOTIVATION DROPS HALFWAY THROUGH A TRAINING PLAN. WHAT CAN YOU RETURN TO?",answers:["WHAT OTHER PEOPLE EXPECT OF YOU", "WHY THE GOAL MATTERS TO YOU", "HOW YOU FELT ON YOUR BEST DAY"],correct:1,explain:"CORRECT. GOALS BUILT ON YOUR VALUES GIVE YOU SOMETHING TO COME BACK TO WHEN MOTIVATION DIPS."}
+      {pillar:"emotionalAwareness",question:"WHEN YOU EXERCISE, YOUR HEART BEATS FASTER AND YOUR BREATHING CHANGES. HOW CAN NOTICING THIS HELP YOU EMOTIONALLY?",answers:["IT MEANS YOU WILL NEVER FEEL NERVOUS AGAIN", "IT TRAINS YOU TO READ BODY SIGNALS, MAKING IT EASIER TO SPOT EMOTIONS LIKE STRESS OR EXCITEMENT", "BODY SIGNALS HAVE NOTHING TO DO WITH EMOTIONS"],correct:1,explain:"CORRECT. EMOTIONS SHOW UP IN THE BODY. EXERCISE IS A SAFE PLACE TO PRACTISE NOTICING THEM."},
+      {pillar:"emotionalAwareness",question:"MANY PEOPLE FEEL CALMER OR HAPPIER AFTER MOVING. WHAT IS THE MOST USEFUL THING TO DO WITH THAT?",answers:["IGNORE IT, BECAUSE FEELINGS DO NOT MATTER", "EXPECT TO FEEL EXACTLY THE SAME EVERY TIME", "NOTICE THE CHANGE, SO YOU LEARN WHAT HELPS SHIFT YOUR MOOD"],correct:2,explain:"CORRECT. WHEN YOU KNOW WHAT LIFTS YOUR MOOD, YOU CAN REACH FOR IT WHEN YOU NEED IT."},
+      {pillar:"purpose",question:"EXERCISE AND WORKING TOWARDS GOALS BOTH INVOLVE DOPAMINE. WHAT DOES DOPAMINE MAINLY DO?",answers:["DRIVES MOTIVATION AND MAKES YOU WANT TO GO AFTER REWARDS", "MAKES YOU FALL ASLEEP", "STOPS YOU FEELING PAIN"],correct:0,explain:"CORRECT. DOPAMINE IS ABOUT WANTING AND PURSUING, NOT JUST PLEASURE. GOALS THAT MATTER TO YOU GIVE IT SOMETHING TO CHASE."},
+      {pillar:"purpose",question:"WHY DOES TICKING OFF SMALL STEPS TOWARDS A GOAL HELP KEEP YOU GOING?",answers:["SMALL STEPS DO NOT COUNT", "EACH STEP THAT FEELS LIKE PROGRESS GIVES A SMALL MOTIVATION BOOST", "ONLY FINISHING THE BIG GOAL MATTERS"],correct:1,explain:"CORRECT. NOTICING PROGRESS FUELS MOTIVATION, SO BREAK BIG GOALS INTO SMALL, MEANINGFUL STEPS."}
     ],
     [
-      {pillar:"cognitiveAgility",question:"WHAT IS COGNITIVE AGILITY?",answers:["ADJUSTING YOUR THINKING WHEN CIRCUMSTANCES CHANGE", "STICKING TO YOUR FIRST IDEA NO MATTER WHAT", "THINKING AS FAST AS POSSIBLE"],correct:0,explain:"CORRECT. IT MEANS QUESTIONING ASSUMPTIONS AND CHANGING YOUR APPROACH WHEN NEEDED."},
-      {pillar:"cognitiveAgility",question:"AN INJURY STOPS YOUR USUAL TRAINING. WHAT DOES AN AGILE RESPONSE LOOK LIKE?",answers:["STOP TRAINING COMPLETELY", "TRAIN THROUGH THE PAIN AS PLANNED", "FIND A USEFUL NEXT STEP, LIKE TRAINING A DIFFERENT AREA"],correct:2,explain:"CORRECT. WHEN THE ORIGINAL PLAN STOPS WORKING, LOOK FOR THE NEXT USEFUL STEP."},
-      {pillar:"creativity",question:"WHY DOES CREATIVITY BELONG IN MENTAL FITNESS?",answers:["IT ONLY MATTERS FOR ARTISTS", "FEELING STUCK OFTEN CALLS FOR A DIFFERENT APPROACH", "IT REPLACES THE NEED FOR EFFORT"],correct:1,explain:"CORRECT. CREATIVITY HELPS YOU GENERATE OPTIONS, EXPERIMENT AND SOLVE PROBLEMS."},
-      {pillar:"creativity",question:"YOUR PROGRESS HAS STALLED FOR WEEKS. WHAT IS A CREATIVE RESPONSE?",answers:["REPEAT THE SAME SESSION, JUST HARDER", "DECIDE YOU HAVE REACHED YOUR LIMIT", "TRY A SMALL EXPERIMENT, LIKE A NEW ROUTINE OR TRAINING PARTNER"],correct:2,explain:"CORRECT. EXPERIMENTING OPENS UP NEW POSSIBILITIES. CREATIVITY TAKES PRACTICE."}
+      {pillar:"cognitiveAgility",question:"REGULAR EXERCISE INCREASES A PROTEIN CALLED BDNF. WHAT DOES BDNF HELP WITH?",answers:["GROWING AND STRENGTHENING CONNECTIONS BETWEEN BRAIN CELLS", "BUILDING BIGGER MUSCLES", "DIGESTING FOOD"],correct:0,explain:"CORRECT. BDNF IS OFTEN CALLED FERTILISER FOR THE BRAIN. IT SUPPORTS LEARNING AND ADAPTING."},
+      {pillar:"cognitiveAgility",question:"REGULAR PHYSICAL ACTIVITY IS LINKED TO IMPROVEMENTS IN WHICH OF THESE?",answers:["PHYSICAL STRENGTH ONLY", "NOTHING TO DO WITH THINKING", "MEMORY, FOCUS AND SWITCHING BETWEEN TASKS"],correct:2,explain:"CORRECT. EXERCISE SUPPORTS THE THINKING SKILLS THAT HELP YOU ADJUST WHEN THINGS CHANGE."},
+      {pillar:"creativity",question:"RESEARCH FOUND THAT WALKING BOOSTED PEOPLE'S CREATIVE THINKING. WHEN DID THE BOOST SHOW UP?",answers:["ONLY AFTER WALKING FOR THREE HOURS", "DURING THE WALK AND SHORTLY AFTERWARDS", "NEVER, BECAUSE WALKING DOES NOT AFFECT THINKING"],correct:1,explain:"CORRECT. IN ONE STANFORD STUDY, PEOPLE CAME UP WITH MORE CREATIVE IDEAS WHILE WALKING THAN WHILE SITTING."},
+      {pillar:"creativity",question:"YOU ARE STUCK ON A PROBLEM. WHY MIGHT A SHORT WALK HELP?",answers:["IT MAKES THE PROBLEM DISAPPEAR", "IT JUST WASTES TIME", "STEPPING AWAY GIVES YOUR BRAIN SPACE TO MAKE NEW CONNECTIONS"],correct:2,explain:"CORRECT. A CHANGE OF ACTIVITY OFTEN HELPS A FRESH IDEA ARRIVE."}
     ],
     [
-      {pillar:"sleep",question:"WHAT DOES SLEEP SUPPORT?",answers:["ONLY PHYSICAL RECOVERY", "NOTHING, IF YOU ARE MOTIVATED ENOUGH", "ATTENTION, EMOTIONAL REGULATION AND LEARNING"],correct:2,explain:"CORRECT. SLEEP SUPPORTS HOW YOU THINK, FEEL AND LEARN."},
-      {pillar:"sleep",question:"YOUR TRAINING AND WORK DEMANDS INCREASE. WHAT SHOULD HAPPEN TO RECOVERY?",answers:["MATCH THE EXTRA DEMAND WITH REALISTIC CHANCES TO REST", "CUT SLEEP TO FIT MORE IN", "LEAVE IT UNTIL THINGS CALM DOWN"],correct:0,explain:"CORRECT. THE DEMANDS YOU PLACE ON YOURSELF NEED TO BE MATCHED BY OPPORTUNITIES TO RECOVER."},
-      {pillar:"nutrition",question:"WHAT MATTERS MOST WITH NUTRITION?",answers:["A PERFECT DIET", "ACHIEVABLE, CONSISTENT HABITS THAT FIT YOUR LIFE", "CUTTING OUT WHOLE FOOD GROUPS"],correct:1,explain:"CORRECT. REGULAR, REALISTIC FUEL MATTERS MORE THAN PERFECTION."},
-      {pillar:"nutrition",question:"YOU SKIP LUNCH BEFORE AN EVENING SESSION. WHAT MIGHT YOU NOTICE?",answers:["LOWER ENERGY AND LESS PATIENCE", "MORE ENERGY AND SHARPER FOCUS", "NO DIFFERENCE AT ALL"],correct:0,explain:"CORRECT. EATING AND DRINKING REGULARLY SUPPORTS YOUR ENERGY FOR DAILY DEMANDS."}
+      {pillar:"sleep",question:"HOW CAN BEING PHYSICALLY ACTIVE DURING THE DAY AFFECT YOUR SLEEP?",answers:["IT ALWAYS KEEPS YOU AWAKE", "IT HAS NO EFFECT ON SLEEP", "IT CAN HELP YOU FALL ASLEEP FASTER AND SLEEP MORE DEEPLY"],correct:2,explain:"CORRECT. ACTIVITY BUILDS HEALTHY TIREDNESS, WHICH SUPPORTS BETTER REST."},
+      {pillar:"sleep",question:"AFTER A POOR NIGHT'S SLEEP, WHAT USUALLY STRUGGLES MOST?",answers:["FOCUS, MOOD AND MANAGING EMOTIONS", "ONLY YOUR MUSCLES", "NOTHING, BECAUSE SLEEP ONLY AFFECTS TIREDNESS"],correct:0,explain:"CORRECT. A TIRED BRAIN REACTS MORE STRONGLY TO STRESS AND FINDS IT HARDER TO FOCUS."},
+      {pillar:"nutrition",question:"YOUR BRAIN USES ABOUT 20% OF YOUR BODY'S ENERGY. WHAT DOES THAT MEAN FOR YOU?",answers:["THE BRAIN DOES NOT NEED FUEL", "REGULAR FOOD AND WATER HELP YOU THINK CLEARLY", "FOOD ONLY MATTERS FOR YOUR MUSCLES"],correct:1,explain:"CORRECT. LONG GAPS WITHOUT FOOD OR WATER CAN AFFECT YOUR FOCUS AND MOOD."},
+      {pillar:"nutrition",question:"BEING ACTIVE CAN MAKE YOU HUNGRIER. WHAT IS THE MOST HELPFUL RESPONSE?",answers:["LISTEN TO YOUR HUNGER AND EAT REGULAR, BALANCED MEALS", "SKIP MEALS TO MAKE UP FOR BEING ACTIVE", "RELY ON SUGARY SNACKS FOR QUICK ENERGY"],correct:0,explain:"CORRECT. STEADY FUEL SUPPORTS STEADY ENERGY AND A STEADIER MOOD."}
     ],
     [
-      {pillar:"movement",question:"BEYOND MOOD, WHAT CAN MOVEMENT GIVE YOU A CHANCE TO PRACTISE?",answers:["AVOIDING ALL DISCOMFORT", "EFFORT, PERSISTENCE AND APPROPRIATE DISCOMFORT", "BEING BETTER THAN EVERYONE ELSE"],correct:1,explain:"CORRECT. EVERY SESSION IS A CHANCE TO PRACTISE SKILLS YOU NEED ELSEWHERE."},
-      {pillar:"movement",question:"YOU FINISH A TOUGH SESSION YOU WANTED TO QUIT. WHAT IS MOST USEFUL?",answers:["REFLECT ON WHAT KEPT YOU GOING AND WHERE ELSE YOU COULD USE IT", "FORGET IT AND MOVE ON", "DECIDE YOU JUST GOT LUCKY"],correct:0,explain:"CORRECT. REFLECTING TURNS A WORKOUT INTO A LESSON FOR THE REST OF LIFE."},
-      {pillar:"stressManagement",question:"WHAT DOES GOOD STRESS MANAGEMENT LOOK LIKE?",answers:["REMOVING ALL STRESS FROM YOUR LIFE", "ALWAYS STAYING CALM", "RESPONDING TO PRESSURE WITH MORE CHOICE"],correct:2,explain:"CORRECT. IT STARTS WITH RECOGNISING STRESS AND WHAT IS DRIVING IT."},
-      {pillar:"stressManagement",question:"A BIG DEADLINE IS WEIGHING ON YOU. WHICH RESPONSE MAKES SENSE?",answers:["CHOOSE WHAT IT NEEDS: CALMING DOWN, PREPARING, SOLVING OR REDUCING A DEMAND", "IGNORE IT AND HOPE IT PASSES", "USE THE SAME RESPONSE FOR EVERY KIND OF STRESS"],correct:0,explain:"CORRECT. SOMETIMES YOU CALM YOURSELF. SOMETIMES YOU PREPARE, SOLVE A PROBLEM OR REDUCE A DEMAND."}
+      {pillar:"movement",question:"MOVING RELEASES ENDORPHINS AND OTHER FEEL-GOOD CHEMICALS. WHAT CAN THEY DO?",answers:["MAKE YOU HAPPY FOREVER", "LIFT YOUR MOOD AND EASE FEELINGS OF STRESS", "MAKE YOU FEEL WORSE"],correct:1,explain:"CORRECT. THE LIFT YOU FEEL AFTER MOVING IS REAL CHEMISTRY."},
+      {pillar:"movement",question:"DO YOU NEED A LONG SESSION FOR MOVEMENT TO HELP YOUR MOOD?",answers:["NO, EVEN A FEW MINUTES OF MOVEMENT CAN SHIFT MOOD AND ENERGY", "YES, ONLY AN HOUR OR MORE MAKES A DIFFERENCE", "MOVEMENT MAKES LOW MOOD WORSE"],correct:0,explain:"CORRECT. SMALL BURSTS COUNT. A SHORT WALK CAN CHANGE HOW YOU FEEL."},
+      {pillar:"stressManagement",question:"DURING EXERCISE YOUR HEART RACES AND YOU BREATHE HARD, A LOT LIKE STRESS. WHAT CAN THIS TEACH YOUR BODY?",answers:["THAT STRESS IS ALWAYS DANGEROUS", "NOTHING AT ALL", "THAT A RACING HEART CAN BE HANDLED, SO STRESS FEELS LESS THREATENING"],correct:2,explain:"CORRECT. EXERCISE IS A SAFE DOSE OF STRESS. IT HELPS YOUR BODY PRACTISE RECOVERING FROM PRESSURE."},
+      {pillar:"stressManagement",question:"CORTISOL IS A STRESS HORMONE. HOW DOES REGULAR MOVEMENT HELP WITH IT?",answers:["IT HELPS YOUR STRESS RESPONSE SETTLE AND RECOVER MORE QUICKLY", "IT REMOVES CORTISOL FROM YOUR BODY FOREVER", "IT KEEPS YOUR CORTISOL HIGH ALL DAY"],correct:0,explain:"CORRECT. EXERCISE RAISES CORTISOL FOR A SHORT TIME, BUT OVER TIME REGULAR MOVEMENT HELPS YOUR BODY BOUNCE BACK FROM STRESS FASTER."}
     ],
     [
-      {pillar:"connection",question:"WHY IS CONNECTION PART OF MENTAL FITNESS?",answers:["YOU SHOULD HANDLE EVERYTHING ALONE", "IT ONLY MATTERS WHEN THINGS ARE GOING WELL", "RELATIONSHIPS CAN GIVE PERSPECTIVE, ENCOURAGEMENT AND PRACTICAL SUPPORT"],correct:2,explain:"CORRECT. FEELING UNDERSTOOD, ASKING FOR HELP AND SUPPORTING OTHERS ALL MATTER."},
-      {pillar:"connection",question:"YOU ARE STRUGGLING TO STAY CONSISTENT WITH TRAINING. WHAT USES CONNECTION?",answers:["KEEP IT TO YOURSELF", "ASK A FRIEND TO TRAIN WITH YOU OR CHECK IN ON YOU", "COMPARE YOURSELF WITH PEOPLE ONLINE"],correct:1,explain:"CORRECT. ASKING FOR SUPPORT IS A STRENGTH, NOT A WEAKNESS."},
-      {pillar:"courage",question:"WHAT IS COURAGE?",answers:["ACTING WHEN SOMETHING IMPORTANT FEELS UNCOMFORTABLE", "FEELING NO FEAR AT ALL", "TAKING RISKS THAT DO NOT MATTER"],correct:0,explain:"CORRECT. COURAGE IS NOT ABOUT ZERO FEAR. IT IS ACTING ON WHAT MATTERS."},
-      {pillar:"courage",question:"YOU WANT TO JOIN A NEW CLASS BUT FEEL NERVOUS. WHAT IS A COURAGEOUS NEXT STEP?",answers:["WAIT UNTIL THE NERVES DISAPPEAR", "DECIDE IT IS NOT FOR PEOPLE LIKE YOU", "TAKE ONE MANAGEABLE ACTION, LIKE BOOKING A TRIAL SESSION"],correct:2,explain:"CORRECT. SMALL, MANAGEABLE ACTIONS STOP FEAR FROM GETTING THE DECIDING VOTE."}
+      {pillar:"connection",question:"MOVING TOGETHER WITH OTHERS, LIKE WALKING OR DANCING, IS LINKED TO STRONGER FEELINGS OF WHAT?",answers:["LONELINESS", "RIVALRY", "BONDING AND TRUST"],correct:2,explain:"CORRECT. SHARED MOVEMENT IS LINKED TO STRONGER SOCIAL BONDS."},
+      {pillar:"connection",question:"OXYTOCIN IS OFTEN CALLED THE BONDING HORMONE. WHAT HELPS RELEASE IT?",answers:["BEING ALONE ALL DAY", "POSITIVE CONTACT, LIKE A HUG OR A MEANINGFUL CHAT", "SCROLLING ON YOUR PHONE"],correct:1,explain:"CORRECT. CONNECTION SUPPORTS HOW YOU FEEL AND HELPS BUFFER STRESS."},
+      {pillar:"courage",question:"GETTING THROUGH PHYSICAL DISCOMFORT TEACHES YOUR BRAIN SOMETHING. HOW DOES THAT HELP COURAGE?",answers:["IT BUILDS PROOF YOU CAN HANDLE HARD THINGS, SO NEW CHALLENGES FEEL LESS SCARY", "IT STOPS YOU EVER FEELING FEAR", "IT HAS NOTHING TO DO WITH COURAGE"],correct:0,explain:"CORRECT. EVERY TIME YOU GET THROUGH DISCOMFORT, YOU COLLECT EVIDENCE THAT YOU CAN COPE."},
+      {pillar:"courage",question:"FEAR AND EXCITEMENT FEEL SIMILAR IN THE BODY, WITH A RACING HEART AND BUTTERFLIES. WHAT CAN YOU DO WITH THAT?",answers:["TREAT EVERY RACING HEART AS DANGER", "AVOID ANYTHING THAT MAKES YOUR HEART RACE", "REFRAME YOUR NERVES AS EXCITEMENT: I AM READY, NOT I AM SCARED"],correct:2,explain:"CORRECT. RESEARCH FOUND THAT SAYING I AM EXCITED BEFORE PRESSURE CAN IMPROVE PERFORMANCE."}
     ]
   ];
 
   // Personalised takeaway for the weakest pillar, shown after the final reveal.
   const PILLAR_TAKEAWAYS = {
-    emotionalAwareness: { why: "NOTICING WHAT YOU FEEL GIVES YOU A CHOICE IN HOW YOU RESPOND.", action: "ONCE A DAY, PAUSE AND NAME WHAT YOU ARE FEELING AND WHAT TRIGGERED IT.", link: "YOUR FEELINGS OFTEN POINT TO WHAT MATTERS TO YOU." },
-    purpose: { why: "A CLEAR DIRECTION GIVES YOU SOMETHING TO RETURN TO WHEN MOTIVATION DIPS.", action: "WRITE DOWN ONE THING THAT MATTERS TO YOU AND ONE SMALL STEP TOWARDS IT.", link: "NOTICE WHAT LIGHTS YOU UP AND WHAT DRAINS YOU." },
-    cognitiveAgility: { why: "ADJUSTING YOUR THINKING HELPS YOU FIND A WAY FORWARD WHEN PLANS CHANGE.", action: "WHEN SOMETHING GOES WRONG, ASK: WHAT IS ANOTHER WAY TO SEE THIS?", link: "A NEW PERSPECTIVE OPENS UP NEW OPTIONS." },
-    creativity: { why: "FEELING STUCK OFTEN CALLS FOR A DIFFERENT APPROACH.", action: "PICK ONE ROUTINE AND TRY A SMALL EXPERIMENT WITH IT.", link: "NEW IDEAS COME EASIER WHEN YOU QUESTION YOUR ASSUMPTIONS." },
-    sleep: { why: "SLEEP SUPPORTS YOUR ATTENTION, MOOD AND LEARNING.", action: "SET A REALISTIC WIND-DOWN TIME AND KEEP IT FOR THREE NIGHTS.", link: "WHEN YOU ARE TIRED, IT IS HARDER TO FUEL YOURSELF WELL." },
-    nutrition: { why: "REGULAR FUEL SUPPORTS YOUR ENERGY TO MEET DAILY DEMANDS.", action: "PLAN ONE MEAL OR SNACK AHEAD FOR YOUR BUSIEST DAY.", link: "STEADY ENERGY IN THE DAY HELPS YOU RECOVER AT NIGHT." },
-    movement: { why: "MOVEMENT SUPPORTS MOOD AND LETS YOU PRACTISE EFFORT AND PERSISTENCE.", action: "ADD ONE 10 MINUTE WALK OR SESSION AND NOTICE HOW YOU FEEL AFTER.", link: "MOVING IS ONE WAY TO RESPOND TO PRESSURE." },
-    stressManagement: { why: "PRESSURE IS EASIER TO HANDLE WHEN YOU HAVE MORE THAN ONE RESPONSE.", action: "NEXT TIME YOU FEEL STRESSED, ASK: DO I NEED TO CALM, PREPARE, SOLVE OR REDUCE?", link: "TRAINING LETS YOU PRACTISE STAYING STEADY UNDER EFFORT." },
-    connection: { why: "THE RIGHT PEOPLE GIVE YOU PERSPECTIVE, ENCOURAGEMENT AND SUPPORT.", action: "REACH OUT TO ONE PERSON, OR ASK FOR HELP WITH ONE THING.", link: "SUPPORT MAKES DIFFICULT STEPS FEEL MORE POSSIBLE." },
-    courage: { why: "SMALL BRAVE ACTIONS STOP FEAR FROM GETTING THE DECIDING VOTE.", action: "CHOOSE ONE THING YOU HAVE BEEN PUTTING OFF AND TAKE THE FIRST SMALL STEP.", link: "TELL SOMEONE YOUR STEP SO THEY CAN BACK YOU." }
+    emotionalAwareness: { why: "NOTICING WHAT YOU FEEL GIVES YOU A CHOICE IN HOW YOU RESPOND.", tips: ["SET THREE REMINDERS A DAY, AND EACH TIME NAME THE EMOTION YOU ARE FEELING IN ONE WORD.", "WHEN A STRONG FEELING SHOWS UP, NOTICE WHERE YOU FEEL IT IN YOUR BODY, LIKE A TIGHT JAW OR A RACING HEART.", "BEFORE BED, JOT DOWN ONE MOMENT THAT CHANGED YOUR MOOD TODAY AND WHAT TRIGGERED IT."], link: "YOUR FEELINGS OFTEN POINT TO WHAT MATTERS TO YOU." },
+    purpose: { why: "A CLEAR DIRECTION GIVES YOU SOMETHING TO RETURN TO WHEN MOTIVATION DIPS.", tips: ["WRITE DOWN THE THREE THINGS THAT MATTER MOST TO YOU, AND WHY.", "EACH MORNING, CHOOSE ONE SMALL ACTION THAT MOVES YOU TOWARDS ONE OF THEM.", "BEFORE SAYING YES TO SOMETHING NEW, ASK: DOES THIS FIT WHAT MATTERS TO ME?"], link: "NOTICE WHAT LIGHTS YOU UP AND WHAT DRAINS YOU." },
+    cognitiveAgility: { why: "ADJUSTING YOUR THINKING HELPS YOU FIND A WAY FORWARD WHEN PLANS CHANGE.", tips: ["WHEN SOMETHING GOES WRONG, ASK: WHAT IS ANOTHER WAY TO SEE THIS?", "WHEN A PLAN FALLS THROUGH, COME UP WITH TWO OTHER OPTIONS BEFORE DECIDING WHAT TO DO.", "IN A DISAGREEMENT, TRY TO EXPLAIN THE OTHER PERSON'S VIEW IN A WAY THEY WOULD AGREE WITH."], link: "A NEW PERSPECTIVE OPENS UP NEW OPTIONS." },
+    creativity: { why: "FEELING STUCK OFTEN CALLS FOR A DIFFERENT APPROACH.", tips: ["CHANGE ONE SMALL ROUTINE, LIKE YOUR ROUTE TO WORK OR WHERE YOU SIT, AND NOTICE WHAT YOU SPOT.", "WHEN YOU FEEL STUCK, LIST TEN POSSIBLE IDEAS, EVEN SILLY ONES, BEFORE CHOOSING ONE.", "SPEND 15 MINUTES ON SOMETHING HANDS-ON, LIKE DRAWING, COOKING OR BUILDING, WITH NO GOAL EXCEPT TO PLAY."], link: "NEW IDEAS COME EASIER WHEN YOU QUESTION YOUR ASSUMPTIONS." },
+    sleep: { why: "SLEEP SUPPORTS YOUR ATTENTION, MOOD AND LEARNING.", tips: ["PICK A REALISTIC BEDTIME AND KEEP IT FOR THREE NIGHTS IN A ROW.", "PUT YOUR PHONE OUT OF REACH FOR THE LAST 30 MINUTES BEFORE BED.", "GET 10 MINUTES OF DAYLIGHT SOON AFTER WAKING TO HELP SET YOUR BODY CLOCK."], link: "WHEN YOU ARE TIRED, IT IS HARDER TO FUEL YOURSELF WELL." },
+    nutrition: { why: "REGULAR FUEL SUPPORTS YOUR ENERGY TO MEET DAILY DEMANDS.", tips: ["PLAN ONE MEAL OR SNACK AHEAD FOR YOUR BUSIEST DAY.", "KEEP A WATER BOTTLE WITH YOU AND REFILL IT AT LEAST TWICE A DAY.", "ADD ONE PORTION OF FRUIT OR VEGETABLES TO A MEAL YOU ALREADY EAT."], link: "STEADY ENERGY IN THE DAY HELPS YOU RECOVER AT NIGHT." },
+    movement: { why: "MOVEMENT SUPPORTS MOOD AND LETS YOU PRACTISE EFFORT AND PERSISTENCE.", tips: ["WALK FOR 10 MINUTES AFTER ONE MEAL EACH DAY.", "DO 5 SQUATS EVERY TIME YOU BOIL THE KETTLE.", "TAKE PHONE CALLS STANDING UP OR WALKING AROUND."], link: "MOVING IS ONE WAY TO RESPOND TO PRESSURE." },
+    stressManagement: { why: "PRESSURE IS EASIER TO HANDLE WHEN YOU HAVE MORE THAN ONE RESPONSE.", tips: ["TRY BOX BREATHING: IN FOR 4, HOLD FOR 4, OUT FOR 4, HOLD FOR 4. REPEAT FOUR TIMES.", "WRITE DOWN WHAT IS STRESSING YOU, CIRCLE WHAT YOU CAN CONTROL, AND PICK ONE SMALL ACTION.", "WHEN TENSION BUILDS, DROP YOUR SHOULDERS, UNCLENCH YOUR JAW AND RELAX YOUR HANDS, OR STEP OUTSIDE FOR 5 MINUTES."], link: "TRAINING LETS YOU PRACTISE STAYING STEADY UNDER EFFORT." },
+    connection: { why: "THE RIGHT PEOPLE GIVE YOU PERSPECTIVE, ENCOURAGEMENT AND SUPPORT.", tips: ["MESSAGE ONE PERSON YOU HAVE NOT SPOKEN TO IN A WHILE.", "ASK FOR HELP WITH ONE THING, HOWEVER SMALL.", "PUT YOUR PHONE AWAY DURING ONE CONVERSATION AND GIVE THE PERSON YOUR FULL ATTENTION."], link: "SUPPORT MAKES DIFFICULT STEPS FEEL MORE POSSIBLE." },
+    courage: { why: "SMALL BRAVE ACTIONS STOP FEAR FROM GETTING THE DECIDING VOTE.", tips: ["CHOOSE ONE THING YOU HAVE BEEN PUTTING OFF AND TAKE THE FIRST SMALL STEP.", "TELL SOMEONE ABOUT YOUR STEP SO THEY CAN BACK YOU.", "SAY ONE HONEST THING YOU WOULD NORMALLY HOLD BACK, LIKE A BOUNDARY OR AN OPINION, KINDLY AND CLEARLY."], link: "TELL SOMEONE YOUR STEP SO THEY CAN BACK YOU." }
   };
 
   function pillarName(key) { return QUESTIONS.find(q => q.key === key).name; }
@@ -1914,8 +1935,8 @@
       '<p class="takeaway-label">YOUR STARTING POINT</p>' +
       '<h3 class="takeaway-pillar">' + pillarName(key) + '<span>' + (gameState.originalStats[key] || 0) + '/10</span></h3>' +
       '<p class="takeaway-text">' + t.why + '</p>' +
-      '<p class="takeaway-label">TRY THIS WEEK</p>' +
-      '<p class="takeaway-text takeaway-action">' + t.action + '</p>' +
+      '<p class="takeaway-label">THREE THINGS TO TRY THIS WEEK</p>' +
+      '<ol class="takeaway-tips">' + t.tips.map(tip => '<li>' + tip + '</li>').join('') + '</ol>' +
       '<div class="takeaway-tool"><span class="takeaway-badge" style="background-image:url(' + gym.badge + ')" aria-hidden="true"></span>' +
       '<p class="takeaway-text"><strong class="teal">' + gym.ability + ' BADGE</strong><br>LINKS WITH ' + pillarName(partner) + ':<br>' + t.link + '</p></div>';
   }
@@ -1961,7 +1982,12 @@
     document.getElementById('wonBadge').setAttribute('aria-label', gym.name + ' ' + gym.ability + ' badge');
     document.getElementById('badgeWinTitle').textContent = gym.ability + ' BADGE WON!';
     document.getElementById('badgeWinCopy').innerHTML = gym.winCopy + '<br><span class="teal">2 RESILIENCE POINTS EARNED</span>';
+    playerHp = 100;
+    setPlayerHp();
     renderGymQuestion();
+    const feedback = document.getElementById('battleFeedback');
+    feedback.classList.add('correct');
+    feedback.textContent = 'HP FULLY RECOVERED. LET\'S GO!';
     goToPage('page-12');
   }
 
@@ -1978,31 +2004,72 @@
     document.getElementById('bossHpFill').style.width = ((questions.length - battleCorrect) / questions.length * 100) + '%';
   }
 
+  function setPlayerHp() {
+    const fill = document.getElementById('playerHpFill');
+    fill.style.width = playerHp + '%';
+    fill.classList.toggle('low', playerHp <= 30);
+  }
+
+  // Replays a one-shot CSS animation on an element.
+  function playAnim(el, cls) {
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
+  }
+
   function answerGym(answerIndex) {
     const questions = GYM_QUESTIONS[selectedGymIndex];
     if (battlePending || battleCorrect >= questions.length) return;
     const q = questions[battleQuestionIndex];
     const feedback = document.getElementById('battleFeedback');
+    const buttons = document.querySelectorAll('#battleOptions .battle-answer');
+    const cowImg = document.getElementById('battleCowImg');
+    const bossImg = document.getElementById('battleBossImg');
+    battlePending = true;
+    buttons.forEach(b => { b.disabled = true; });
     if (answerIndex !== q.correct) {
+      buttons[answerIndex].classList.add('wrong');
       feedback.classList.remove('correct');
-      feedback.textContent = 'NOT QUITE. THINK ABOUT WHAT YOU JUST LEARNED, THEN TRY AGAIN.';
+      feedback.textContent = 'NOT QUITE. YOU TOOK A HIT. TRY AGAIN.';
+      playAnim(bossImg, 'boss-attack');
+      setTimeout(() => {
+        playAnim(cowImg, 'took-hit');
+        playerHp = Math.max(PLAYER_HP_FLOOR, playerHp - WRONG_ANSWER_DAMAGE);
+        setPlayerHp();
+      }, 220);
+      battleTimer = setTimeout(() => {
+        battlePending = false;
+        buttons.forEach(b => { if (!b.classList.contains('wrong')) b.disabled = false; });
+      }, 700);
       return;
     }
-    battlePending = true;
     battleCorrect++;
+    buttons[answerIndex].classList.add('right');
     feedback.classList.add('correct');
     feedback.textContent = q.explain;
-    document.getElementById('battleOptions').innerHTML = '';
-    document.getElementById('bossHpFill').style.width = ((questions.length - battleCorrect) / questions.length * 100) + '%';
+    playAnim(cowImg, 'cow-attack');
+    setTimeout(() => {
+      playAnim(bossImg, 'took-hit');
+      document.getElementById('bossHpFill').style.width = ((questions.length - battleCorrect) / questions.length * 100) + '%';
+    }, 220);
     battleTimer = setTimeout(() => {
+      const last = battleQuestionIndex >= questions.length - 1;
+      document.getElementById('battleOptions').innerHTML = '';
+      feedback.innerHTML = q.explain +
+        '<button class="primary-btn battle-next" onclick="nextGymQuestion()">' + (last ? 'FINISH BATTLE' : 'NEXT QUESTION') + '</button>';
       battlePending = false;
-      if (battleQuestionIndex < questions.length - 1) {
-        battleQuestionIndex++;
-        renderGymQuestion();
-      } else {
-        showGymBadge();
-      }
-    }, 900);
+    }, 700);
+  }
+
+  function nextGymQuestion() {
+    const questions = GYM_QUESTIONS[selectedGymIndex];
+    if (battlePending) return;
+    if (battleQuestionIndex < questions.length - 1) {
+      battleQuestionIndex++;
+      renderGymQuestion();
+    } else {
+      showGymBadge();
+    }
   }
 
   function showGymBadge() {
