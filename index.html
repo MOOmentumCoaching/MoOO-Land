@@ -998,9 +998,6 @@
   @media (prefers-reduced-motion:reduce) { .moo-award-diamond, .award-sparkle { animation:none; } }
   #page-award .takeaway-card { margin-bottom:24px; }
   .takeaway-action { background:#e8f6f3; border:2px dashed var(--moo-teal); border-radius:4px; padding:10px 8px; margin-top:0; }
-  .takeaway-tool { display:flex; align-items:center; gap:10px; margin-top:16px; padding-top:14px; border-top:2px solid #dcebe7; text-align:left; }
-  .takeaway-tool .takeaway-text { margin:0; }
-  .takeaway-badge { flex:0 0 56px; height:56px; background-size:contain; background-position:center; background-repeat:no-repeat; }
 </style>
 </head>
 <body>
@@ -1835,20 +1832,19 @@
 
   // Personalised takeaway for the weakest pillar, shown after the final reveal.
   const PILLAR_TAKEAWAYS = {
-    emotionalAwareness: { why: "NOTICING WHAT YOU FEEL GIVES YOU A CHOICE IN HOW YOU RESPOND.", tips: ["SET THREE REMINDERS A DAY, AND EACH TIME NAME THE EMOTION YOU ARE FEELING IN ONE WORD.", "WHEN A STRONG FEELING SHOWS UP, NOTICE WHERE YOU FEEL IT IN YOUR BODY, LIKE A TIGHT JAW OR A RACING HEART.", "BEFORE BED, JOT DOWN ONE MOMENT THAT CHANGED YOUR MOOD TODAY AND WHAT TRIGGERED IT."], link: "YOUR FEELINGS OFTEN POINT TO WHAT MATTERS TO YOU." },
-    purpose: { why: "A CLEAR DIRECTION GIVES YOU SOMETHING TO RETURN TO WHEN MOTIVATION DIPS.", tips: ["WRITE DOWN THE THREE THINGS THAT MATTER MOST TO YOU, AND WHY.", "EACH MORNING, CHOOSE ONE SMALL ACTION THAT MOVES YOU TOWARDS ONE OF THEM.", "BEFORE SAYING YES TO SOMETHING NEW, ASK: DOES THIS FIT WHAT MATTERS TO ME?"], link: "NOTICE WHAT LIGHTS YOU UP AND WHAT DRAINS YOU." },
-    cognitiveAgility: { why: "ADJUSTING YOUR THINKING HELPS YOU FIND A WAY FORWARD WHEN PLANS CHANGE.", tips: ["WHEN SOMETHING GOES WRONG, ASK: WHAT IS ANOTHER WAY TO SEE THIS?", "WHEN A PLAN FALLS THROUGH, COME UP WITH TWO OTHER OPTIONS BEFORE DECIDING WHAT TO DO.", "IN A DISAGREEMENT, TRY TO EXPLAIN THE OTHER PERSON'S VIEW IN A WAY THEY WOULD AGREE WITH."], link: "A NEW PERSPECTIVE OPENS UP NEW OPTIONS." },
-    creativity: { why: "FEELING STUCK OFTEN CALLS FOR A DIFFERENT APPROACH.", tips: ["CHANGE ONE SMALL ROUTINE, LIKE YOUR ROUTE TO WORK OR WHERE YOU SIT, AND NOTICE WHAT YOU SPOT.", "WHEN YOU FEEL STUCK, LIST TEN POSSIBLE IDEAS, EVEN SILLY ONES, BEFORE CHOOSING ONE.", "SPEND 15 MINUTES ON SOMETHING HANDS-ON, LIKE DRAWING, COOKING OR BUILDING, WITH NO GOAL EXCEPT TO PLAY."], link: "NEW IDEAS COME EASIER WHEN YOU QUESTION YOUR ASSUMPTIONS." },
-    sleep: { why: "SLEEP SUPPORTS YOUR ATTENTION, MOOD AND LEARNING.", tips: ["PICK A REALISTIC BEDTIME AND KEEP IT FOR THREE NIGHTS IN A ROW.", "PUT YOUR PHONE OUT OF REACH FOR THE LAST 30 MINUTES BEFORE BED.", "GET 10 MINUTES OF DAYLIGHT SOON AFTER WAKING TO HELP SET YOUR BODY CLOCK."], link: "WHEN YOU ARE TIRED, IT IS HARDER TO FUEL YOURSELF WELL." },
-    nutrition: { why: "REGULAR FUEL SUPPORTS YOUR ENERGY TO MEET DAILY DEMANDS.", tips: ["PLAN ONE MEAL OR SNACK AHEAD FOR YOUR BUSIEST DAY.", "KEEP A WATER BOTTLE WITH YOU AND REFILL IT AT LEAST TWICE A DAY.", "ADD ONE PORTION OF FRUIT OR VEGETABLES TO A MEAL YOU ALREADY EAT."], link: "STEADY ENERGY IN THE DAY HELPS YOU RECOVER AT NIGHT." },
-    movement: { why: "MOVEMENT SUPPORTS MOOD AND LETS YOU PRACTISE EFFORT AND PERSISTENCE.", tips: ["WALK FOR 10 MINUTES AFTER ONE MEAL EACH DAY.", "DO 5 SQUATS EVERY TIME YOU BOIL THE KETTLE.", "TAKE PHONE CALLS STANDING UP OR WALKING AROUND."], link: "MOVING IS ONE WAY TO RESPOND TO PRESSURE." },
-    stressManagement: { why: "PRESSURE IS EASIER TO HANDLE WHEN YOU HAVE MORE THAN ONE RESPONSE.", tips: ["TRY BOX BREATHING: IN FOR 4, HOLD FOR 4, OUT FOR 4, HOLD FOR 4. REPEAT FOUR TIMES.", "WRITE DOWN WHAT IS STRESSING YOU, CIRCLE WHAT YOU CAN CONTROL, AND PICK ONE SMALL ACTION.", "WHEN TENSION BUILDS, DROP YOUR SHOULDERS, UNCLENCH YOUR JAW AND RELAX YOUR HANDS, OR STEP OUTSIDE FOR 5 MINUTES."], link: "TRAINING LETS YOU PRACTISE STAYING STEADY UNDER EFFORT." },
-    connection: { why: "THE RIGHT PEOPLE GIVE YOU PERSPECTIVE, ENCOURAGEMENT AND SUPPORT.", tips: ["MESSAGE ONE PERSON YOU HAVE NOT SPOKEN TO IN A WHILE.", "ASK FOR HELP WITH ONE THING, HOWEVER SMALL.", "PUT YOUR PHONE AWAY DURING ONE CONVERSATION AND GIVE THE PERSON YOUR FULL ATTENTION."], link: "SUPPORT MAKES DIFFICULT STEPS FEEL MORE POSSIBLE." },
-    courage: { why: "SMALL BRAVE ACTIONS STOP FEAR FROM GETTING THE DECIDING VOTE.", tips: ["CHOOSE ONE THING YOU HAVE BEEN PUTTING OFF AND TAKE THE FIRST SMALL STEP.", "TELL SOMEONE ABOUT YOUR STEP SO THEY CAN BACK YOU.", "SAY ONE HONEST THING YOU WOULD NORMALLY HOLD BACK, LIKE A BOUNDARY OR AN OPINION, KINDLY AND CLEARLY."], link: "TELL SOMEONE YOUR STEP SO THEY CAN BACK YOU." }
+    emotionalAwareness: { why: "NOTICING WHAT YOU FEEL GIVES YOU A CHOICE IN HOW YOU RESPOND.", tips: ["SET THREE REMINDERS A DAY, AND EACH TIME NAME THE EMOTION YOU ARE FEELING IN ONE WORD.", "WHEN A STRONG FEELING SHOWS UP, NOTICE WHERE YOU FEEL IT IN YOUR BODY, LIKE A TIGHT JAW OR A RACING HEART.", "BEFORE BED, JOT DOWN ONE MOMENT THAT CHANGED YOUR MOOD TODAY AND WHAT TRIGGERED IT."] },
+    purpose: { why: "A CLEAR DIRECTION GIVES YOU SOMETHING TO RETURN TO WHEN MOTIVATION DIPS.", tips: ["WRITE DOWN THE THREE THINGS THAT MATTER MOST TO YOU, AND WHY.", "EACH MORNING, CHOOSE ONE SMALL ACTION THAT MOVES YOU TOWARDS ONE OF THEM.", "BEFORE SAYING YES TO SOMETHING NEW, ASK: DOES THIS FIT WHAT MATTERS TO ME?"] },
+    cognitiveAgility: { why: "ADJUSTING YOUR THINKING HELPS YOU FIND A WAY FORWARD WHEN PLANS CHANGE.", tips: ["WHEN SOMETHING GOES WRONG, ASK: WHAT IS ANOTHER WAY TO SEE THIS?", "WHEN A PLAN FALLS THROUGH, COME UP WITH TWO OTHER OPTIONS BEFORE DECIDING WHAT TO DO.", "IN A DISAGREEMENT, TRY TO EXPLAIN THE OTHER PERSON'S VIEW IN A WAY THEY WOULD AGREE WITH."] },
+    creativity: { why: "FEELING STUCK OFTEN CALLS FOR A DIFFERENT APPROACH.", tips: ["CHANGE ONE SMALL ROUTINE, LIKE YOUR ROUTE TO WORK OR WHERE YOU SIT, AND NOTICE WHAT YOU SPOT.", "WHEN YOU FEEL STUCK, LIST TEN POSSIBLE IDEAS, EVEN SILLY ONES, BEFORE CHOOSING ONE.", "SPEND 15 MINUTES ON SOMETHING HANDS-ON, LIKE DRAWING, COOKING OR BUILDING, WITH NO GOAL EXCEPT TO PLAY."] },
+    sleep: { why: "SLEEP SUPPORTS YOUR ATTENTION, MOOD AND LEARNING.", tips: ["PICK A REALISTIC BEDTIME AND KEEP IT FOR THREE NIGHTS IN A ROW.", "PUT YOUR PHONE OUT OF REACH FOR THE LAST 30 MINUTES BEFORE BED.", "GET 10 MINUTES OF DAYLIGHT SOON AFTER WAKING TO HELP SET YOUR BODY CLOCK."] },
+    nutrition: { why: "REGULAR FUEL SUPPORTS YOUR ENERGY TO MEET DAILY DEMANDS.", tips: ["PLAN ONE MEAL OR SNACK AHEAD FOR YOUR BUSIEST DAY.", "KEEP A WATER BOTTLE WITH YOU AND REFILL IT AT LEAST TWICE A DAY.", "ADD ONE PORTION OF FRUIT OR VEGETABLES TO A MEAL YOU ALREADY EAT."] },
+    movement: { why: "MOVEMENT SUPPORTS MOOD AND LETS YOU PRACTISE EFFORT AND PERSISTENCE.", tips: ["WALK FOR 10 MINUTES AFTER ONE MEAL EACH DAY.", "DO 5 SQUATS EVERY TIME YOU BOIL THE KETTLE.", "TAKE PHONE CALLS STANDING UP OR WALKING AROUND."] },
+    stressManagement: { why: "PRESSURE IS EASIER TO HANDLE WHEN YOU HAVE MORE THAN ONE RESPONSE.", tips: ["TRY BOX BREATHING: IN FOR 4, HOLD FOR 4, OUT FOR 4, HOLD FOR 4. REPEAT FOUR TIMES.", "WRITE DOWN WHAT IS STRESSING YOU, CIRCLE WHAT YOU CAN CONTROL, AND PICK ONE SMALL ACTION.", "WHEN TENSION BUILDS, DROP YOUR SHOULDERS, UNCLENCH YOUR JAW AND RELAX YOUR HANDS, OR STEP OUTSIDE FOR 5 MINUTES."] },
+    connection: { why: "THE RIGHT PEOPLE GIVE YOU PERSPECTIVE, ENCOURAGEMENT AND SUPPORT.", tips: ["MESSAGE ONE PERSON YOU HAVE NOT SPOKEN TO IN A WHILE.", "ASK FOR HELP WITH ONE THING, HOWEVER SMALL.", "PUT YOUR PHONE AWAY DURING ONE CONVERSATION AND GIVE THE PERSON YOUR FULL ATTENTION."] },
+    courage: { why: "SMALL BRAVE ACTIONS STOP FEAR FROM GETTING THE DECIDING VOTE.", tips: ["CHOOSE ONE THING YOU HAVE BEEN PUTTING OFF AND TAKE THE FIRST SMALL STEP.", "TELL SOMEONE ABOUT YOUR STEP SO THEY CAN BACK YOU.", "SAY ONE HONEST THING YOU WOULD NORMALLY HOLD BACK, LIKE A BOUNDARY OR AN OPINION, KINDLY AND CLEARLY."] }
   };
 
   function pillarName(key) { return QUESTIONS.find(q => q.key === key).name; }
-  function gymForPillar(key) { return GYMS.slice(0, GYM_COUNT).find(g => g.pillars.includes(key)); }
 
 
   function syncResilience() {
@@ -1954,17 +1950,13 @@
     const card = document.getElementById('takeawayCard');
     if (!key) { card.innerHTML = ''; return; }
     const t = PILLAR_TAKEAWAYS[key];
-    const gym = gymForPillar(key);
-    const partner = gym.pillars.find(p => p !== key);
     card.innerHTML =
       '<div class="section-badge">YOUR NEXT STEP</div>' +
       '<p class="takeaway-label">YOUR STARTING POINT</p>' +
       '<h3 class="takeaway-pillar">' + pillarName(key) + '<span>' + (gameState.originalStats[key] || 0) + '/10</span></h3>' +
       '<p class="takeaway-text">' + t.why + '</p>' +
       '<p class="takeaway-label">THREE THINGS TO TRY THIS WEEK</p>' +
-      '<ol class="takeaway-tips">' + t.tips.map(tip => '<li>' + tip + '</li>').join('') + '</ol>' +
-      '<div class="takeaway-tool"><span class="takeaway-badge" style="background-image:url(' + gym.badge + ')" aria-hidden="true"></span>' +
-      '<p class="takeaway-text"><strong class="teal">' + gym.ability + ' BADGE</strong><br>LINKS WITH ' + pillarName(partner) + ':<br>' + t.link + '</p></div>';
+      '<ol class="takeaway-tips">' + t.tips.map(tip => '<li>' + tip + '</li>').join('') + '</ol>';
   }
 
   function renderMooReward() {
@@ -2011,6 +2003,7 @@
     document.getElementById('badgeWinCopy').innerHTML = gym.winCopy + '<br><span class="teal">2 RESILIENCE POINTS EARNED</span>';
     playerHp = 100;
     setPlayerHp();
+    ['battleCowImg', 'battleBossImg', 'clawMark'].forEach(id => document.getElementById(id).classList.remove(...HIT_CLASSES));
     renderGymQuestion();
     const feedback = document.getElementById('battleFeedback');
     feedback.classList.add('correct');
@@ -2038,11 +2031,19 @@
   }
 
   // Replays a one-shot CSS animation on an element.
+  const HIT_CLASSES = ['cow-attack', 'took-hit', 'slash'];
   function playAnim(el, cls) {
-    el.classList.remove('cow-attack', 'took-hit', 'slash');
-    void el.offsetWidth;
+    el.classList.remove(...HIT_CLASSES);
+    el.getBoundingClientRect(); // forces a reflow so the animation restarts (works for SVG too)
     el.classList.add(cls);
   }
+
+  // Clear each hit effect once it finishes, so nothing replays when a battle page is shown again.
+  ['battleCowImg', 'battleBossImg', 'clawMark'].forEach(id => {
+    document.getElementById(id).addEventListener('animationend', e => {
+      if (e.target === e.currentTarget) e.currentTarget.classList.remove(...HIT_CLASSES);
+    });
+  });
 
   function answerGym(answerIndex) {
     const questions = GYM_QUESTIONS[selectedGymIndex];
