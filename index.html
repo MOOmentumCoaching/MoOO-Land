@@ -1395,6 +1395,27 @@
   <button class="primary-btn" onclick="beginFirstChallenge()">BEGIN FIRST CHALLENGE</button>
 </div>
 
+<!-- PAGE LOCK: SPEAKER CHECKPOINT BEFORE THE MAP -->
+<div id="page-lock" class="game-page">
+  <div class="page-header">
+    <button class="back-btn" onclick="goToPage('page-10')">BACK</button>
+    <div class="mini-logo" role="img" aria-label="MOOmentum"></div>
+    <div style="width:60px"></div>
+  </div>
+  <div class="section-badge">CHECKPOINT</div>
+  <div class="section-heading">MOO LAND IS LOCKED.</div>
+  <div class="dialogue-box" style="margin-bottom:16px;">
+    <p class="dialogue-text">NICE WORK! <span class="teal">HOLD TIGHT.</span><br>WAIT FOR THE SPEAKER<br>TO SHARE THE PASSWORD.</p>
+  </div>
+  <svg class="narrator-cow" viewBox="0 0 64 64"><use href="#master-cow"/></svg>
+  <div class="field-group">
+    <label class="field-label" for="mapPassword">PASSWORD</label>
+    <input class="field-input" type="text" id="mapPassword" placeholder="Watch the screen" maxlength="30" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter')unlockMap()">
+    <p class="error-msg" id="passwordError">NOT YET. WATCH THE SCREEN FOR THE PASSWORD.</p>
+  </div>
+  <button class="primary-btn" onclick="unlockMap()">UNLOCK MOO LAND</button>
+</div>
+
 <!-- PAGE 11: MOO LAND MAP -->
 <div id="page-11" class="game-page">
   <div class="page-header">
@@ -1531,7 +1552,8 @@
     finalRevealed: false,
     finalBadgeClaimed: false,
     strongestKey: null,
-    weakestKey: null
+    weakestKey: null,
+    mapUnlocked: false
   };
 
   // ============ NAVIGATION ============
@@ -1776,6 +1798,26 @@
       document.getElementById('tieError').style.display = 'block';
       return;
     }
+    // The speaker shares the password once the room is ready; it is only asked for once.
+    if (!gameState.mapUnlocked) {
+      document.getElementById('passwordError').style.display = 'none';
+      goToPage('page-lock');
+      return;
+    }
+    buildMap();
+    goToPage('page-11');
+  }
+
+  const MAP_PASSWORD = 'moomentum';
+
+  function unlockMap() {
+    const input = document.getElementById('mapPassword');
+    if (input.value.replace(/\s+/g, '').toLowerCase() !== MAP_PASSWORD) {
+      document.getElementById('passwordError').style.display = 'block';
+      return;
+    }
+    gameState.mapUnlocked = true;
+    input.blur();
     buildMap();
     goToPage('page-11');
   }
@@ -2208,6 +2250,7 @@
     gameState.startingResilience = 0;
     gameState.strongestKey = null;
     gameState.weakestKey = null;
+    gameState.mapUnlocked = false;
     qIndex = 0;
     selectedCow = null;
 
