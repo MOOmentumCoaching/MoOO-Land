@@ -1432,8 +1432,7 @@
  <button class="primary-btn" id="revealBossBtn" onclick="revealFinalBoss()">REVEAL BOSS</button>
  <div id="finalComparison" hidden>
   <div class="score-compare"><div><span>YOUR STARTING RESILIENCE</span><strong id="baselineScore"></strong><div class="compare-track"><div id="baselineBar"></div></div></div><div><span>YOUR RESILIENCE NOW</span><strong id="currentScore"></strong><div class="compare-track"><div id="currentBar"></div></div></div></div>
-  <p class="map-status" id="finalGain"></p>
-  <div class="dialogue-box final-summary"><p class="dialogue-text">THE GYM WAS PRACTICE.<br><strong class="teal">LIFE IS THE TEST.</strong><br>YOU CHOOSE WHAT HAPPENS NEXT.</p></div>
+  <div class="dialogue-box final-summary"><p class="dialogue-text">THE GYM WAS PRACTICE.<br><strong class="teal">YOUR LIFE IS THE TEST.</strong><br>YOU NOW HAVE THE TOOLS.<br>SO CHOOSE WHAT HAPPENS NEXT.</p></div>
   <div class="badge-tracker" id="finalBadges"></div>
   <button class="primary-btn" id="claimMooBadgeBtn" onclick="claimMooBadge()">CLAIM YOUR MOO BADGE</button>
 
@@ -1515,7 +1514,6 @@
 
     gameState.playerName = name;
     gameState.playerAge = age;
-    gameState.startingResilience = age;
     syncResilience();
     gameState.playerCity = city;
     goToPage('page-5');
@@ -1635,13 +1633,11 @@
 
   // ============ HIDDEN SCORING ============
   function calculateScores() {
-    // Pillar reflections stay separate from the age-based game score.
+    // Starting resilience is the total of the ten pillar reflections.
     gameState.stats = {};
-    let total = 0;
     QUESTIONS.forEach(q => {
       const v = gameState.answers[q.key] || 0;
       gameState.stats[q.key] = v;
-      total += v;
     });
     syncResilience();
     // Preserve an untouched baseline for the eventual Final Boss reveal.
@@ -1770,7 +1766,7 @@
   ];
 
   function syncResilience() {
-    gameState.startingResilience = Number(gameState.playerAge) || 0;
+    gameState.startingResilience = QUESTIONS.reduce((total, q) => total + (Number(gameState.stats[q.key]) || 0), 0);
     gameState.resilienceScore = gameState.startingResilience + new Set(gameState.badges).size * POINTS_PER_GYM;
     document.getElementById('battlePlayerLevel').textContent = 'LV.' + gameState.playerAge;
     document.getElementById('battleResilienceNumber').textContent = gameState.resilienceScore;
@@ -1858,11 +1854,10 @@
     document.getElementById('finalIdentity').innerHTML="<span>IT WAS YOU ALL THIS TIME!</span><span>LET'S SEE HOW MUCH YOU HAVE GROWN!</span>";
     document.getElementById('revealBossBtn').style.display='none';
     document.getElementById('finalComparison').hidden=false;
-    document.getElementById('baselineScore').textContent=gameState.startingResilience;
-    document.getElementById('currentScore').textContent=gameState.resilienceScore;
-    document.getElementById('baselineBar').style.width=(gameState.startingResilience/gameState.resilienceScore*100)+'%';
-    document.getElementById('currentBar').style.width='100%';
-    document.getElementById('finalGain').textContent='FIVE GYMS. FIVE TOOLS. +'+(gameState.resilienceScore-gameState.startingResilience)+' RESILIENCE POINTS. NOW TAKE THOSE TOOLS INTO LIFE.';
+    document.getElementById('baselineScore').textContent=gameState.startingResilience + ' / 100';
+    document.getElementById('currentScore').textContent=gameState.resilienceScore + ' / 100';
+    document.getElementById('baselineBar').style.width=Math.min(100, gameState.startingResilience)+'%';
+    document.getElementById('currentBar').style.width=Math.min(100, gameState.resilienceScore)+'%';
     document.getElementById('finalBadges').innerHTML=badgeMarkup();
     renderMooReward();
   }
