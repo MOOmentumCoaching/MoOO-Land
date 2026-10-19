@@ -15,6 +15,7 @@
     --moo-grey: #555;
     --moo-dark: #1a1a1a;
     --moo-white: #ffffff;
+    --moo-logo-teal: #187d7b;
     --pixel-font: 'Press Start 2P', monospace;
     --display-font: 'Bangers', cursive;
     --body-font: 'Nunito', sans-serif;
@@ -190,8 +191,8 @@
     letter-spacing: 0.5px;
   }
 
-  .dialogue-text .teal { color: var(--moo-teal); }
-  strong.teal { font-weight: 700; }
+  .dialogue-text .teal, .teal { color: var(--moo-logo-teal); }
+  strong.teal { font-weight: 400; font-synthesis: none; text-shadow: 1px 0 0 currentColor; }
 
   /* BOTTOM ROW: COW + START */
   .bottom-row {
@@ -891,7 +892,7 @@
   .battle-hp { flex: 1; height: 9px; border: 2px solid var(--moo-dark); background: #d9dfdc; }
   .battle-hp-fill { width: 100%; height: 100%; background: #42a85e; transition: width .35s steps(3,end), background .2s; }
   .boss-art { position: absolute; right: -5%; top: 68px; width: 69%; height: 245px; object-fit: contain; image-rendering: pixelated; mix-blend-mode: multiply; filter: drop-shadow(5px 7px 0 rgba(0,0,0,.18)); }
-  .player-battle-cow { position: absolute; left: -5%; bottom: 0; width: 49%; height: 175px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(4px 5px 0 rgba(0,0,0,.2)); transform: scaleX(-1); }
+  .player-battle-cow { position: absolute; left: -5%; bottom: 0; width: 49%; height: 175px; object-fit: contain; image-rendering: pixelated; filter: drop-shadow(4px 5px 0 rgba(0,0,0,.2)); }
   .player-panel { position: absolute; right: 16px; bottom: 18px; z-index: 3; width: 58%; background: white; border: 3px solid var(--moo-dark); border-radius: 18px 5px 5px 5px; box-shadow: 3px 3px 0 var(--moo-dark); padding: 9px 10px 8px 18px; }
   .player-panel .battle-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .battle-dialogue { border-top: 4px solid var(--moo-dark); background: white; padding: 15px; min-height: 220px; }
@@ -917,8 +918,8 @@
   #finalComparison { width:100%; }
   #finalComparison[hidden] { display:none; }
   .score-compare { display:grid; grid-template-columns:1fr 1fr; gap:14px; width:100%; margin:20px 0; }
-  .score-compare > div { background:white; border:4px solid var(--moo-dark); box-shadow:4px 4px 0 var(--moo-dark); border-radius:6px; padding:18px 10px; text-align:center; font-family:var(--pixel-font); }
-  .score-compare span { font-size:8px; line-height:1.8; }
+  .score-compare > div { display:flex; flex-direction:column; background:white; border:4px solid var(--moo-dark); box-shadow:4px 4px 0 var(--moo-dark); border-radius:6px; padding:18px 10px; text-align:center; font-family:var(--pixel-font); }
+  .score-compare span { display:flex; align-items:center; justify-content:center; min-height:3.6em; font-size:8px; line-height:1.8; }
   .score-compare strong { display:block; font-size:28px; margin:18px 0; color:var(--moo-teal); }
   .compare-track { height:16px; border:2px solid var(--moo-dark); background:#dcebe7; }
   .compare-track > div { height:100%; background:var(--moo-teal); }
@@ -1678,7 +1679,7 @@
     });
 
     document.getElementById('recBanner').innerHTML =
-      'YOU <strong class="teal">SEEM</strong> LIKE A ' + best.label + ' TYPE,<br>' +
+      'YOU <strong class="teal">SEEM</strong> LIKE ' + ('AEIOU'.includes(best.label[0]) ? 'AN ' : 'A ') + best.label + ' TYPE,<br>' +
       'BUT YOU CAN <strong class="teal">CHOOSE</strong> WHOEVER YOU WANT.<br>' +
       'DON\'T FORGET TO <strong class="teal">NAME</strong> YOUR COW!';
   }
@@ -1756,19 +1757,19 @@
     [
       {pillar:"sleep",question:"WHAT DOES SLEEP SUPPORT?",answers:["ONLY PHYSICAL RECOVERY", "NOTHING, IF YOU ARE MOTIVATED ENOUGH", "ATTENTION, EMOTIONAL REGULATION AND LEARNING"],correct:2,explain:"CORRECT. SLEEP SUPPORTS HOW YOU THINK, FEEL AND LEARN."},
       {pillar:"sleep",question:"YOUR TRAINING AND WORK DEMANDS INCREASE. WHAT SHOULD HAPPEN TO RECOVERY?",answers:["MATCH THE EXTRA DEMAND WITH REALISTIC CHANCES TO REST", "CUT SLEEP TO FIT MORE IN", "LEAVE IT UNTIL THINGS CALM DOWN"],correct:0,explain:"CORRECT. THE DEMANDS YOU PLACE ON YOURSELF NEED TO BE MATCHED BY OPPORTUNITIES TO RECOVER."},
-      {pillar:"nutrition",question:"WHAT IS THE FOCUS FOR NUTRITION IN MOO?",answers:["A PERFECT DIET", "ACHIEVABLE, CONSISTENT HABITS THAT FIT YOUR LIFE", "CUTTING OUT WHOLE FOOD GROUPS"],correct:1,explain:"CORRECT. REGULAR, REALISTIC FUEL MATTERS MORE THAN PERFECTION."},
+      {pillar:"nutrition",question:"WHAT MATTERS MOST WITH NUTRITION?",answers:["A PERFECT DIET", "ACHIEVABLE, CONSISTENT HABITS THAT FIT YOUR LIFE", "CUTTING OUT WHOLE FOOD GROUPS"],correct:1,explain:"CORRECT. REGULAR, REALISTIC FUEL MATTERS MORE THAN PERFECTION."},
       {pillar:"nutrition",question:"YOU SKIP LUNCH BEFORE AN EVENING SESSION. WHAT MIGHT YOU NOTICE?",answers:["LOWER ENERGY AND LESS PATIENCE", "MORE ENERGY AND SHARPER FOCUS", "NO DIFFERENCE AT ALL"],correct:0,explain:"CORRECT. EATING AND DRINKING REGULARLY SUPPORTS YOUR ENERGY FOR DAILY DEMANDS."}
     ],
     [
       {pillar:"movement",question:"BEYOND MOOD, WHAT CAN MOVEMENT GIVE YOU A CHANCE TO PRACTISE?",answers:["AVOIDING ALL DISCOMFORT", "EFFORT, PERSISTENCE AND APPROPRIATE DISCOMFORT", "BEING BETTER THAN EVERYONE ELSE"],correct:1,explain:"CORRECT. EVERY SESSION IS A CHANCE TO PRACTISE SKILLS YOU NEED ELSEWHERE."},
       {pillar:"movement",question:"YOU FINISH A TOUGH SESSION YOU WANTED TO QUIT. WHAT IS MOST USEFUL?",answers:["REFLECT ON WHAT KEPT YOU GOING AND WHERE ELSE YOU COULD USE IT", "FORGET IT AND MOVE ON", "DECIDE YOU JUST GOT LUCKY"],correct:0,explain:"CORRECT. REFLECTING TURNS A WORKOUT INTO A LESSON FOR THE REST OF LIFE."},
-      {pillar:"stressManagement",question:"WHAT DOES STRESS MANAGEMENT MEAN HERE?",answers:["REMOVING ALL STRESS FROM YOUR LIFE", "ALWAYS STAYING CALM", "RESPONDING TO PRESSURE WITH MORE CHOICE"],correct:2,explain:"CORRECT. IT STARTS WITH RECOGNISING STRESS AND WHAT IS DRIVING IT."},
+      {pillar:"stressManagement",question:"WHAT DOES GOOD STRESS MANAGEMENT LOOK LIKE?",answers:["REMOVING ALL STRESS FROM YOUR LIFE", "ALWAYS STAYING CALM", "RESPONDING TO PRESSURE WITH MORE CHOICE"],correct:2,explain:"CORRECT. IT STARTS WITH RECOGNISING STRESS AND WHAT IS DRIVING IT."},
       {pillar:"stressManagement",question:"A BIG DEADLINE IS WEIGHING ON YOU. WHICH RESPONSE MAKES SENSE?",answers:["CHOOSE WHAT IT NEEDS: CALMING DOWN, PREPARING, SOLVING OR REDUCING A DEMAND", "IGNORE IT AND HOPE IT PASSES", "USE THE SAME RESPONSE FOR EVERY KIND OF STRESS"],correct:0,explain:"CORRECT. SOMETIMES YOU CALM YOURSELF. SOMETIMES YOU PREPARE, SOLVE A PROBLEM OR REDUCE A DEMAND."}
     ],
     [
       {pillar:"connection",question:"WHY IS CONNECTION PART OF MENTAL FITNESS?",answers:["YOU SHOULD HANDLE EVERYTHING ALONE", "IT ONLY MATTERS WHEN THINGS ARE GOING WELL", "RELATIONSHIPS CAN GIVE PERSPECTIVE, ENCOURAGEMENT AND PRACTICAL SUPPORT"],correct:2,explain:"CORRECT. FEELING UNDERSTOOD, ASKING FOR HELP AND SUPPORTING OTHERS ALL MATTER."},
       {pillar:"connection",question:"YOU ARE STRUGGLING TO STAY CONSISTENT WITH TRAINING. WHAT USES CONNECTION?",answers:["KEEP IT TO YOURSELF", "ASK A FRIEND TO TRAIN WITH YOU OR CHECK IN ON YOU", "COMPARE YOURSELF WITH PEOPLE ONLINE"],correct:1,explain:"CORRECT. ASKING FOR SUPPORT IS A STRENGTH, NOT A WEAKNESS."},
-      {pillar:"courage",question:"IN MOO, WHAT IS COURAGE?",answers:["ACTING WHEN SOMETHING IMPORTANT FEELS UNCOMFORTABLE", "FEELING NO FEAR AT ALL", "TAKING RISKS THAT DO NOT MATTER"],correct:0,explain:"CORRECT. COURAGE IS NOT ABOUT ZERO FEAR. IT IS ACTING ON WHAT MATTERS."},
+      {pillar:"courage",question:"WHAT IS COURAGE?",answers:["ACTING WHEN SOMETHING IMPORTANT FEELS UNCOMFORTABLE", "FEELING NO FEAR AT ALL", "TAKING RISKS THAT DO NOT MATTER"],correct:0,explain:"CORRECT. COURAGE IS NOT ABOUT ZERO FEAR. IT IS ACTING ON WHAT MATTERS."},
       {pillar:"courage",question:"YOU WANT TO JOIN A NEW CLASS BUT FEEL NERVOUS. WHAT IS A COURAGEOUS NEXT STEP?",answers:["WAIT UNTIL THE NERVES DISAPPEAR", "DECIDE IT IS NOT FOR PEOPLE LIKE YOU", "TAKE ONE MANAGEABLE ACTION, LIKE BOOKING A TRIAL SESSION"],correct:2,explain:"CORRECT. SMALL, MANAGEABLE ACTIONS STOP FEAR FROM GETTING THE DECIDING VOTE."}
     ]
   ];
